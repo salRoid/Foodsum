@@ -1,0 +1,35 @@
+{
+  "_comment": [
+    "Portion strings for the generation prompt. STYLE.md: the portion is part of",
+    "the prompt because 'a picture of a mountain of rice against a row that says",
+    "\"1 katori\" is a lie the user will act on'.",
+    "",
+    "Source: the 13 rows of Health's curated `Food` table in health_db_local,",
+    "read on 2026-08-25. Refresh with `npm run missing -- --db`, which reads the",
+    "table live and overrides anything here.",
+    "",
+    "Health's row 'Rajma / Chana (1 katori, cooked)' is one portion target for two",
+    "dishes; dishes.ts already splits it into two slugs, so the portion is written",
+    "onto both by hand here.",
+    "",
+    "A dish with NO entry here has no Food row, and its prompt carries no portion.",
+    "The prefix's 'Realistic home-cooked portion' is what covers it. Do not invent",
+    "a portion for one — see the report in DECISIONS.md."
+  ],
+  "portions": {
+    "whey-protein-shake": "1 scoop, water",
+    "boiled-eggs": "3 whole",
+    "egg-bhurji": "2 eggs + 1 white, onion tomato",
+    "paneer-bhurji": "100g paneer",
+    "greek-yogurt": "200g",
+    "dal": "1 katori, cooked",
+    "rajma": "1 katori, cooked",
+    "chana": "1 katori, cooked",
+    "roti": "1 medium, no ghee",
+    "cooked-rice": "1 katori",
+    "sprouts-salad": "1 bowl",
+    "mixed-vegetable-sabzi": "1 katori, low oil",
+    "almonds": "15 pieces",
+    "oats": "40g dry, with milk"
+  }
+}

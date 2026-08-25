@@ -1,0 +1,330 @@
+{
+  "version": 1,
+  "generatedAt": "2026-08-25",
+  "baseUrl": "/i",
+  "sizes": [
+    "160x120",
+    "400x300",
+    "800x600",
+    "1200x900"
+  ],
+  "formats": [
+    "webp",
+    "jpg"
+  ],
+  "dishes": [
+    {
+      "slug": "whey-protein-shake",
+      "name": "Whey Protein Shake",
+      "category": "supplement",
+      "keys": [
+        "protein shake",
+        "whey",
+        "whey protein",
+        "whey protein shake",
+        "whey shake"
+      ],
+      "variants": 0,
+      "fromHealthFoodTable": true
+    },
+    {
+      "slug": "boiled-eggs",
+      "name": "Boiled Eggs",
+      "category": "egg",
+      "keys": [
+        "boiled egg",
+        "boiled eggs",
+        "eggs boiled",
+        "uble ande"
+      ],
+      "variants": 0,
+      "fromHealthFoodTable": true
+    },
+    {
+      "slug": "egg-bhurji",
+      "name": "Egg Bhurji",
+      "category": "egg",
+      "keys": [
+        "anda bhurji",
+        "egg bhurji",
+        "egg burji"
+      ],
+      "variants": 0,
+      "fromHealthFoodTable": true
+    },
+    {
+      "slug": "paneer-bhurji",
+      "name": "Paneer Bhurji",
+      "category": "dairy",
+      "keys": [
+        "paneer bhurji",
+        "paneer burji"
+      ],
+      "variants": 0,
+      "fromHealthFoodTable": true
+    },
+    {
+      "slug": "greek-yogurt",
+      "name": "Greek Yogurt",
+      "category": "dairy",
+      "keys": [
+        "greek yoghurt",
+        "greek yogurt",
+        "hung curd"
+      ],
+      "variants": 0,
+      "fromHealthFoodTable": true
+    },
+    {
+      "slug": "dal",
+      "name": "Dal",
+      "category": "legume",
+      "keys": [
+        "arhar dal",
+        "daal",
+        "dahl",
+        "dal",
+        "dal tadka",
+        "moong dal",
+        "tadka dal",
+        "toor dal"
+      ],
+      "variants": 0,
+      "fromHealthFoodTable": true
+    },
+    {
+      "slug": "rajma",
+      "name": "Rajma",
+      "category": "legume",
+      "keys": [
+        "kidney beans",
+        "rajma",
+        "rajma curry"
+      ],
+      "variants": 0,
+      "fromHealthFoodTable": true
+    },
+    {
+      "slug": "chana",
+      "name": "Chana",
+      "category": "legume",
+      "keys": [
+        "chana",
+        "chana masala",
+        "chickpeas",
+        "chole",
+        "kabuli chana"
+      ],
+      "variants": 0,
+      "fromHealthFoodTable": true
+    },
+    {
+      "slug": "roti",
+      "name": "Roti",
+      "category": "grain",
+      "keys": [
+        "chapati",
+        "chapatti",
+        "phulka",
+        "roti",
+        "rotis"
+      ],
+      "variants": 0,
+      "fromHealthFoodTable": true
+    },
+    {
+      "slug": "cooked-rice",
+      "name": "Cooked Rice",
+      "category": "grain",
+      "keys": [
+        "chawal",
+        "cooked rice",
+        "katori rice",
+        "plain rice",
+        "rice",
+        "steamed rice"
+      ],
+      "variants": 0,
+      "fromHealthFoodTable": true
+    },
+    {
+      "slug": "sprouts-salad",
+      "name": "Sprouts Salad",
+      "category": "legume",
+      "keys": [
+        "moong sprouts",
+        "sprout salad",
+        "sprouts",
+        "sprouts salad"
+      ],
+      "variants": 0,
+      "fromHealthFoodTable": true
+    },
+    {
+      "slug": "mixed-vegetable-sabzi",
+      "name": "Mixed Vegetable Sabzi",
+      "category": "vegetable",
+      "keys": [
+        "mix veg",
+        "mix veg sabzi",
+        "mixed veg",
+        "mixed veg sabzi",
+        "mixed vegetable sabzi",
+        "sabzi",
+        "veg sabzi"
+      ],
+      "variants": 0,
+      "fromHealthFoodTable": true
+    },
+    {
+      "slug": "almonds",
+      "name": "Almonds",
+      "category": "nut",
+      "keys": [
+        "almond",
+        "almonds",
+        "badam"
+      ],
+      "variants": 0,
+      "fromHealthFoodTable": true
+    },
+    {
+      "slug": "oats",
+      "name": "Oats with Milk",
+      "category": "grain",
+      "keys": [
+        "oatmeal",
+        "oats",
+        "oats milk",
+        "oats with milk",
+        "porridge"
+      ],
+      "variants": 0,
+      "fromHealthFoodTable": true
+    },
+    {
+      "slug": "paneer",
+      "name": "Paneer",
+      "category": "dairy",
+      "keys": [
+        "cottage cheese",
+        "paneer",
+        "paneer cubes"
+      ],
+      "variants": 0
+    },
+    {
+      "slug": "banana",
+      "name": "Banana",
+      "category": "fruit",
+      "keys": [
+        "banana",
+        "bananas",
+        "kela"
+      ],
+      "variants": 0
+    },
+    {
+      "slug": "besan-chilla",
+      "name": "Besan Chilla",
+      "category": "legume",
+      "keys": [
+        "besan cheela",
+        "besan chila",
+        "besan chilla",
+        "cheela",
+        "chilla"
+      ],
+      "variants": 0
+    },
+    {
+      "slug": "poha",
+      "name": "Poha",
+      "category": "grain",
+      "keys": [
+        "poha",
+        "pohe"
+      ],
+      "variants": 0
+    },
+    {
+      "slug": "apple",
+      "name": "Apple",
+      "category": "fruit",
+      "keys": [
+        "apple",
+        "apples",
+        "seb"
+      ],
+      "variants": 0
+    },
+    {
+      "slug": "curd",
+      "name": "Curd",
+      "category": "dairy",
+      "keys": [
+        "curd",
+        "dahi",
+        "plain curd",
+        "yoghurt",
+        "yogurt"
+      ],
+      "variants": 0
+    },
+    {
+      "slug": "tea",
+      "name": "Tea",
+      "category": "drink",
+      "keys": [
+        "chai",
+        "masala chai",
+        "milk tea",
+        "tea"
+      ],
+      "variants": 0
+    },
+    {
+      "slug": "walnuts",
+      "name": "Walnuts",
+      "category": "nut",
+      "keys": [
+        "akhrot",
+        "walnut",
+        "walnuts"
+      ],
+      "variants": 0
+    },
+    {
+      "slug": "aloo-palak",
+      "name": "Aloo Palak",
+      "category": "vegetable",
+      "keys": [
+        "aloo palak",
+        "alu palak",
+        "potato spinach"
+      ],
+      "variants": 0
+    },
+    {
+      "slug": "boondi-raita",
+      "name": "Boondi Raita",
+      "category": "dairy",
+      "keys": [
+        "boondi raita",
+        "bundi raita"
+      ],
+      "variants": 0
+    },
+    {
+      "slug": "cucumber",
+      "name": "Cucumber",
+      "category": "vegetable",
+      "keys": [
+        "cucumber",
+        "cucumber slices",
+        "kheera"
+      ],
+      "variants": 0
+    }
+  ]
+}

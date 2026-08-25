@@ -1,0 +1,11 @@
+# Dependencies — this library has none at runtime; sharp is a dev tool only.
+node_modules/
+
+# macOS
+.DS_Store
+
+# The staging area for images you have generated but not yet ingested.
+# Raw drops are never published — `npm run ingest` produces the corpus files
+# that are. Keep the folder (and its README) so the workflow is discoverable.
+inbox/*
+!inbox/README.md
