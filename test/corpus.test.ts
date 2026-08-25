@@ -68,14 +68,22 @@ test('adding an image is a file drop plus a rebuild — no code change', () => {
   }
 });
 
-test('the committed index.json is in step with dishes.ts', () => {
-  // Guards the one way this repo can silently lie: editing dishes.ts and
-  // forgetting `npm run build`, so consumers load a stale catalogue.
+test('the committed index.json is in step with dishes.ts AND meals.ts', () => {
+  // Guards the one way this repo can silently lie: editing dishes.ts or
+  // meals.ts and forgetting `npm run build`, so consumers load a stale
+  // catalogue. Meals are covered here for the same reason dishes are — a meal
+  // entry that exists in source and not in the index is a plate whose
+  // photograph would never be reached.
   const committed = JSON.parse(readFileSync(join(ROOT, 'corpus/index.json'), 'utf8'));
   const fresh = buildIndex(join(ROOT, 'corpus', 'images'));
   assert.deepEqual(
     committed.dishes,
     fresh.dishes,
     'corpus/index.json is stale — run `npm run build`',
+  );
+  assert.deepEqual(
+    committed.meals,
+    fresh.meals,
+    'corpus/index.json meals are stale — run `npm run build`',
   );
 });

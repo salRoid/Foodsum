@@ -129,8 +129,20 @@
         "roti",
         "rotis"
       ],
-      "variants": 0,
-      "fromHealthFoodTable": true
+      "variants": 1,
+      "fromHealthFoodTable": true,
+      "variantMeta": [
+        {
+          "v": 1,
+          "styleVersion": "v1",
+          "sizes": [
+            "1200x900",
+            "160x120",
+            "400x300",
+            "800x600"
+          ]
+        }
+      ]
     },
     {
       "slug": "cooked-rice",
@@ -325,6 +337,195 @@
         "kheera"
       ],
       "variants": 0
+    }
+  ],
+  "meals": [
+    {
+      "kind": "meal",
+      "slug": "oats-with-milk-boiled-eggs",
+      "name": "Oats with milk + 2 boiled eggs",
+      "keys": [
+        "oats with milk boiled eggs"
+      ],
+      "variants": 1,
+      "dishes": [
+        "oats",
+        "boiled-eggs"
+      ],
+      "loggedTimes": 3,
+      "variantMeta": [
+        {
+          "v": 1,
+          "styleVersion": "v1",
+          "sizes": [
+            "1200x900",
+            "160x120",
+            "400x300",
+            "800x600"
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "meal",
+      "slug": "greek-yogurt-almonds",
+      "name": "Greek yogurt 200g + 8 almonds",
+      "keys": [
+        "greek yogurt almonds",
+        "hung curd almonds"
+      ],
+      "variants": 0,
+      "dishes": [
+        "greek-yogurt",
+        "almonds"
+      ],
+      "loggedTimes": 3
+    },
+    {
+      "kind": "meal",
+      "slug": "greek-yogurt-banana",
+      "name": "Greek yogurt 200g + banana",
+      "keys": [
+        "greek yogurt banana"
+      ],
+      "variants": 1,
+      "dishes": [
+        "greek-yogurt",
+        "banana"
+      ],
+      "loggedTimes": 2,
+      "variantMeta": [
+        {
+          "v": 1,
+          "styleVersion": "v1",
+          "sizes": [
+            "1200x900",
+            "160x120",
+            "400x300",
+            "800x600"
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "meal",
+      "slug": "dal-roti-sprouts-salad",
+      "name": "Dal + 1 roti + sprouts salad",
+      "keys": [
+        "dal roti sprouts salad"
+      ],
+      "variants": 0,
+      "dishes": [
+        "dal",
+        "roti",
+        "sprouts-salad"
+      ],
+      "loggedTimes": 2
+    },
+    {
+      "kind": "meal",
+      "slug": "dal-roti-mixed-veg-sabzi",
+      "name": "Dal + 1 roti + mixed veg sabzi",
+      "keys": [
+        "dal roti mixed veg sabzi",
+        "dal roti mixed vegetable sabzi",
+        "dal roti sabzi"
+      ],
+      "variants": 1,
+      "dishes": [
+        "dal",
+        "roti",
+        "mixed-vegetable-sabzi"
+      ],
+      "loggedTimes": 1,
+      "variantMeta": [
+        {
+          "v": 1,
+          "styleVersion": "v1",
+          "sizes": [
+            "1200x900",
+            "160x120",
+            "400x300",
+            "800x600"
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "meal",
+      "slug": "roti-aloo-palak-boondi-raita-cucumber",
+      "name": "2 roti + aloo palak + boondi raita + cucumber",
+      "keys": [
+        "roti aloo palak boondi raita",
+        "roti aloo palak boondi raita cucumber"
+      ],
+      "variants": 1,
+      "dishes": [
+        "roti",
+        "aloo-palak",
+        "boondi-raita",
+        "cucumber"
+      ],
+      "loggedTimes": 1,
+      "variantMeta": [
+        {
+          "v": 1,
+          "styleVersion": "v1",
+          "sizes": [
+            "1200x900",
+            "160x120",
+            "400x300",
+            "800x600"
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "meal",
+      "slug": "egg-bhurji-roti-salad",
+      "name": "Egg bhurji + 2 roti + salad",
+      "keys": [
+        "egg bhurji roti",
+        "egg bhurji roti salad"
+      ],
+      "variants": 1,
+      "dishes": [
+        "egg-bhurji",
+        "roti"
+      ],
+      "unresolvedParts": [
+        "salad"
+      ],
+      "loggedTimes": 1,
+      "variantMeta": [
+        {
+          "v": 1,
+          "styleVersion": "v1",
+          "sizes": [
+            "1200x900",
+            "160x120",
+            "400x300",
+            "800x600"
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "meal",
+      "slug": "paneer-bhurji-roti-salad",
+      "name": "Paneer bhurji + 1 roti + salad",
+      "keys": [
+        "paneer bhurji roti salad"
+      ],
+      "variants": 0,
+      "dishes": [
+        "paneer-bhurji",
+        "roti"
+      ],
+      "unresolvedParts": [
+        "salad"
+      ],
+      "loggedTimes": 1
     }
   ]
 }

@@ -1,6 +1,14 @@
-// Resolution — fragment in, dish or nothing out.
+// Resolution — meal in, one meal picture or a strip of dish pictures or
+// nothing out.
 //
-// ── THE TIERS ──
+// ── STEP 0, BEFORE ANY OF THE TIERS BELOW: THE WHOLE MEAL ──
+// `resolveMealEntry` asks whether the ENTIRE typed string names a plate we have
+// photographed whole. A hit that has an image wins outright and the fragment
+// machinery below never runs. Everything else — including a meal entry that
+// matched but has no picture yet — falls through to it unchanged. See
+// `resolveMealEntry` for why that lookup is exact and not scored.
+//
+// ── THE TIERS (fragments) ──
 //
 //   TIER 1  `exact`       normalised fragment === a dish slug, or === the
 //                         normalised canonical name. Cannot be wrong.
@@ -34,12 +42,68 @@
 
 import { normalise } from './normalise.ts';
 import { segment, softSplit } from './segment.ts';
-import type { IndexDish, LoadedIndex } from './index-schema.ts';
+import type { IndexDish, IndexMeal, LoadedIndex } from './index-schema.ts';
 
 export type Tier = 'exact' | 'alias' | 'unresolved';
 
 /** Tiers whose result may be shown to a user. */
 export const RENDERABLE_TIERS: readonly Tier[] = ['exact', 'alias'];
+
+/**
+ * How a whole-meal hit was reached. Reported separately from the fragment
+ * tiers for the same diagnostic reason those two are kept apart: a rising
+ * `meal-alias` share is the meal alias table earning its keep.
+ */
+export type MealTier = 'meal-exact' | 'meal-alias';
+
+export interface MealEntryResolution {
+  /** The whole typed string, trimmed. */
+  text: string;
+  /** The key it normalised to. */
+  key: string;
+  tier: MealTier;
+  meal: IndexMeal;
+}
+
+/**
+ * THE FIRST STEP OF RESOLUTION: does the WHOLE typed string name a meal we have
+ * photographed as one plate?
+ *
+ * Exactly the same machinery as `resolveFragment`, on purpose — one
+ * normaliser, one alias-table discipline, no second matcher. The only
+ * difference is which map it consults and that it never segments: a meal is
+ * matched whole or not at all.
+ *
+ * ── WHY THIS IS NOT LOOSER THAN THE DISH MATCHER, DESPITE BEING HARDER ──
+ * Meal strings are long, free-text and vary in ways dish names do not
+ * ("+ sabzi" vs "+ mixed veg sabzi"), so the pull toward scoring is stronger
+ * here than anywhere else in this repo. It is refused for a stronger reason: a
+ * wrong DISH photo misrepresents one third of a row, and a wrong MEAL photo
+ * misrepresents the whole of it. The ordering the design commits to is
+ *
+ *     right meal  >  right fragments  >  nothing  >  wrong meal
+ *
+ * and a near-miss must therefore land on "right fragments", which is exactly
+ * what an exact map lookup does when it misses. Word ORDER is significant for
+ * the same reason: sorting the tokens before lookup would make "roti + dal"
+ * and "dal + roti" the same key, which is one plausible-sounding step from
+ * making any bag of the same words the same key.
+ */
+export function resolveMealEntry(idx: LoadedIndex, mealName: string): MealEntryResolution | null {
+  const key = normalise(mealName);
+  if (!key) return null;
+
+  const meal = idx.byMealKey.get(key);
+  if (!meal) return null;
+
+  const isCanonical = normalise(meal.name) === key;
+  return {
+    text: mealName.trim(),
+    key,
+    tier: isCanonical ? 'meal-exact' : 'meal-alias',
+    meal,
+  };
+}
 
 export interface FragmentResolution {
   /** The fragment as it was typed, trimmed. */

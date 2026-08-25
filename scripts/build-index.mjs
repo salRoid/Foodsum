@@ -1,6 +1,6 @@
 #!/usr/bin/env node
-// Build `corpus/index.json` from `src/dishes.ts` + whatever is in
-// `corpus/images/`.
+// Build `corpus/index.json` from `src/dishes.ts` + `src/meals.ts` + whatever
+// is in `corpus/images/`.
 //
 // This is the ONLY step between adding a dish (or dropping in an image) and a
 // consumer seeing it. Run it after either. It is idempotent, it writes one
@@ -22,9 +22,13 @@ const index = buildIndex(join(ROOT, 'corpus', 'images'));
 
 writeFileSync(join(ROOT, 'corpus', 'index.json'), JSON.stringify(index, null, 2) + '\n');
 
+const meals = index.meals ?? [];
 const withImages = index.dishes.filter((d) => d.variants > 0).length;
+const mealsWithImages = meals.filter((m) => m.variants > 0).length;
 console.log(
-  `foodsum: wrote ${index.dishes.length} dishes, ` +
-    `${index.dishes.reduce((n, d) => n + d.keys.length, 0)} lookup keys, ` +
-    `${withImages} with images → corpus/index.json`,
+  `foodsum: wrote ${index.dishes.length} dishes ` +
+    `(${index.dishes.reduce((n, d) => n + d.keys.length, 0)} keys, ${withImages} with images) ` +
+    `and ${meals.length} meals ` +
+    `(${meals.reduce((n, m) => n + m.keys.length, 0)} keys, ${mealsWithImages} with images) ` +
+    '→ corpus/index.json',
 );

@@ -35,6 +35,7 @@ import {
 import { buildIndex } from '../src/build.ts';
 import { SIZES } from '../src/index-schema.ts';
 import { DISHES } from '../src/dishes.ts';
+import { MEALS } from '../src/meals.ts';
 
 const argv = process.argv.slice(2);
 const has = (f) => argv.includes(f);
@@ -47,7 +48,11 @@ const KEEP = has('--keep');
 const BUDGET_SCALE = num('--budget-scale', 1);
 
 const ACCEPTED_INPUT = new Set(['.png', '.jpg', '.jpeg', '.webp', '.tif', '.tiff', '.avif']);
-const SLUGS = new Set(DISHES.map((d) => d.slug));
+// Dishes and meals share ONE slug namespace and ONE images tree, so ingest
+// treats them identically — same crop, same ladder, same budgets, same sidecar.
+// `loadIndex` has already made a collision between the two fatal, so a name
+// here can only mean one thing.
+const SLUGS = new Set([...DISHES.map((d) => d.slug), ...MEALS.map((m) => m.slug)]);
 const [CW, CH] = CANONICAL_SIZE.split('x').map(Number);
 /** WebP quality ladder, walked downward until the rung fits its budget. */
 const QUALITY_STEPS = [90, 85, 80, 75, 70, 65, 60, 55, 50, 45, 40];
@@ -98,8 +103,13 @@ for (const file of files) {
 if (ok > 0 && !DRY) {
   const index = buildIndex(IMAGES);
   writeFileSync(INDEX_JSON, JSON.stringify(index, null, 2) + '\n');
+  const meals = index.meals ?? [];
   const withImages = index.dishes.filter((d) => d.variants > 0).length;
-  console.log(`\n  index rebuilt: ${withImages}/${index.dishes.length} dishes now have an image`);
+  const mealsWith = meals.filter((m) => m.variants > 0).length;
+  console.log(
+    `\n  index rebuilt: ${withImages}/${index.dishes.length} dishes and ` +
+      `${mealsWith}/${meals.length} meals now have an image`,
+  );
 }
 
 console.log(`\n  ${ok} ingested, ${failures.length} rejected${DRY ? ' (dry run — nothing written)' : ''}\n`);
@@ -128,8 +138,9 @@ function slugFromFilename(file) {
   const trimmed = stem.replace(/(--.*|-\d+)$/, '');
   if (SLUGS.has(trimmed)) return trimmed;
   throw new Error(
-    `"${stem}" is not a slug in src/dishes.ts. Name the file <slug>.png exactly — ` +
-      'run `npm run missing` for the list. Adding a NEW dish is a code change, not a file drop.',
+    `"${stem}" is not a slug in src/dishes.ts or src/meals.ts. Name the file <slug>.png ` +
+      'exactly — run `npm run missing` for the list. Adding a NEW dish or meal is a code ' +
+      'change, not a file drop.',
   );
 }
 

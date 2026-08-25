@@ -25,6 +25,57 @@ export const PORTIONS_JSON = join(ROOT, 'corpus', 'portions.json');
 /** The rung the cards actually render, and the one STYLE.md budgets. */
 export const CANONICAL_SIZE = '400x300';
 
+/**
+ * The section of STYLE.md under one EXACT heading line, up to the next heading
+ * of the same or a shallower depth.
+ *
+ * Matching the heading exactly, rather than by a loose `##\s*Hard exclusions`
+ * pattern, is deliberate. The meal variant added `### Fixed prefix — meal (v1)`
+ * and `### Hard exclusions — meals` next to the dish originals, and a loose
+ * pattern silently picks whichever comes first in the file — which would have
+ * made the section order of a markdown document decide which prompt every image
+ * in the corpus was generated from.
+ */
+function section(md, heading) {
+  const depth = heading.match(/^#+/)[0].length;
+  const lines = md.split('\n');
+  const start = lines.findIndex((l) => l.trim() === heading);
+  if (start === -1) return null;
+  const end = lines.findIndex(
+    (l, i) => i > start && /^#+\s/.test(l) && l.match(/^#+/)[0].length <= depth,
+  );
+  return lines.slice(start + 1, end === -1 ? lines.length : end).join('\n');
+}
+
+/** The first blockquote in a section, flattened to one line. */
+function blockquote(body, heading) {
+  const m = body?.match(/(?:^|\n)((?:>[^\n]*\n)+)/);
+  if (!m) throw new Error(`foodsum: STYLE.md section "${heading}" has no blockquote`);
+  return m[1]
+    .split('\n')
+    .filter((l) => l.startsWith('>'))
+    .map((l) => l.replace(/^>\s?/, '').trim())
+    .join(' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+/** The first `- ` bullet list in a section. */
+function bullets(body) {
+  if (!body) return [];
+  const m = body.match(/(?:^|\n)((?:-[^\n]*\n)+)/);
+  if (!m) return [];
+  return m[1]
+    .split('\n')
+    .filter((l) => l.startsWith('-'))
+    .map((l) => l.replace(/^-\s*/, '').trim());
+}
+
+const DISH_PREFIX_HEADING = '### Fixed prefix (v1)';
+const MEAL_PREFIX_HEADING = '### Fixed prefix — meal (v1)';
+const DISH_EXCLUSIONS_HEADING = '## Hard exclusions';
+const MEAL_EXCLUSIONS_HEADING = '### Hard exclusions — meals';
+
 export function readStyle() {
   const md = readFileSync(STYLE_PATH, 'utf8');
 
@@ -32,18 +83,24 @@ export function readStyle() {
   if (!vm) throw new Error('foodsum: STYLE.md has no "**Style version: `vN`**" line');
   const styleVersion = vm[1];
 
-  // The blockquote under "### Fixed prefix (vN)".
-  const pm = md.match(/###\s*Fixed prefix[^\n]*\n\n((?:>[^\n]*\n)+)/);
-  if (!pm) throw new Error('foodsum: STYLE.md has no "### Fixed prefix" blockquote');
-  const prefix = pm[1]
-    .split('\n')
-    .filter((l) => l.startsWith('>'))
-    .map((l) => l.replace(/^>\s?/, '').trim())
-    .join(' ')
-    .replace(/\s+/g, ' ')
-    .trim();
+  // The two prefix headings carry the style version in their own text, so a
+  // version bump that forgets to bump a heading fails loudly here rather than
+  // generating v2 images from the v1 prompt.
+  const dishHeading = DISH_PREFIX_HEADING.replace('v1', styleVersion);
+  const mealHeading = MEAL_PREFIX_HEADING.replace('v1', styleVersion);
+
+  const dishBody = section(md, dishHeading);
+  if (!dishBody) throw new Error(`foodsum: STYLE.md has no "${dishHeading}" section`);
+  const prefix = blockquote(dishBody, dishHeading);
   if (!prefix.includes('{dish}')) {
-    throw new Error('foodsum: STYLE.md prompt prefix has no {dish} placeholder');
+    throw new Error('foodsum: STYLE.md dish prompt prefix has no {dish} placeholder');
+  }
+
+  const mealBody = section(md, mealHeading);
+  if (!mealBody) throw new Error(`foodsum: STYLE.md has no "${mealHeading}" section`);
+  const mealPrefix = blockquote(mealBody, mealHeading);
+  if (!mealPrefix.includes('{meal}')) {
+    throw new Error('foodsum: STYLE.md meal prompt prefix has no {meal} placeholder');
   }
 
   const bm = md.match(/Target weight[^|]*\|\s*\*\*under\s+([\d.]+)\s*KB\*\*/i);
@@ -52,17 +109,35 @@ export function readStyle() {
 
   // The hard exclusions, so AGENTS.md and `missing` can quote them verbatim
   // instead of paraphrasing (a paraphrased rule is a changed rule).
-  const em = md.match(/##\s*Hard exclusions[^\n]*\n\n[^\n]*\n\n((?:-[^\n]*\n)+)/);
-  const exclusions = em
-    ? em[1].split('\n').filter((l) => l.startsWith('-')).map((l) => l.replace(/^-\s*/, '').trim())
-    : [];
+  const exclusions = bullets(section(md, DISH_EXCLUSIONS_HEADING));
+  // A meal is several things by definition, so two dish exclusions are
+  // REPLACED for meals rather than dropped. STYLE.md restates the whole list
+  // there; it is quoted whole rather than diffed, for the same reason.
+  const mealExclusions = bullets(section(md, MEAL_EXCLUSIONS_HEADING));
 
-  return { styleVersion, prefix, canonicalBudgetBytes, exclusions };
+  return {
+    styleVersion,
+    prefix,
+    mealPrefix,
+    canonicalBudgetBytes,
+    exclusions,
+    mealExclusions: mealExclusions.length ? mealExclusions : exclusions,
+  };
 }
 
-/** `prefix` with `{dish}` filled in. The ONLY sanctioned way to build a prompt. */
+/** `prefix` with `{dish}` filled in. The ONLY sanctioned way to build a dish prompt. */
 export function promptFor(style, dishText) {
   return style.prefix.replace('{dish}', dishText);
+}
+
+/**
+ * `mealPrefix` with `{meal}` filled in. The ONLY sanctioned way to build a meal
+ * prompt — and note it takes the meal's NAME verbatim, portions and all,
+ * because a meal's portions live inside its own string rather than in Health's
+ * `Food` table.
+ */
+export function mealPromptFor(style, mealName) {
+  return style.mealPrefix.replace('{meal}', mealName);
 }
 
 /**

@@ -3,8 +3,9 @@
 **Dish name in, dish picture out — or nothing.**
 
 A static corpus of food images, a shipped `index.json`, and a matcher that
-segments a typed meal into dishes, resolves each one by exact lookup, and
-**renders nothing when it is not sure**.
+recognises a **whole plate** when it has photographed one, otherwise segments a
+typed meal into dishes and resolves each one by exact lookup, and **renders
+nothing when it is not sure**.
 
 Lorem Picsum is a folder of photos behind a random number generator. Foodsum is
 the same shape with the randomness inverted, and that single inversion is where
@@ -14,6 +15,10 @@ of your dinner is worse than no picture at all.**
 
 Status: **stage 1 — the matcher, proven against real data. The corpus is
 empty.** See "What is not built" at the bottom.
+
+**Resolution is a hybrid:** a photograph of the whole plate when we have one,
+otherwise a strip of dish photos, otherwise nothing. See §0 below for the
+numbers that forced it.
 
 ---
 
@@ -37,8 +42,14 @@ All 7 unresolved fragments are **deliberate refusals**, not gaps: 6 × bare
 ```
 npm run report          # the full breakdown, every resolution grouped by dish
 npm run report -- --db  # same, straight from health_db_local
-npm test                # 23 tests, including the numbers above
+npm test                # 38 tests, including the numbers above
 ```
+
+**The 6 meal entries do not move any of those numbers, and that is deliberate:**
+the report counts fragments through the dish matcher, exactly as it did before
+meals existed, and counts whole-meal hits beside them. 13 of the 37 rows match
+a meal — but a meal only *wins* once it has a photograph, and the corpus is
+empty, so today every call still takes the fragment path.
 
 `npm run report` prints **every** resolution grouped by dish. That is the point:
 the list is short enough to read down and see a wrong match with your own eyes,
@@ -55,10 +66,13 @@ import raw from '@suite/foodsum/index.json' with { type: 'json' };
 const idx = loadIndex(raw);                 // once, cached
 const r = resolveMeal(idx, 'Dal + 1 roti + mixed veg sabzi', { size: '400x300' });
 
-// r.images        → up to 3, in the order the dishes were typed
+// r.images        → ONE photo of the whole plate if we have one, otherwise up
+//                   to 3 dish photos in the order the dishes were typed
 // r.images.length === 0  → RENDER NOTHING. No element, no box, no spinner.
+// r.meal          → the whole-meal hit, or null. `.rendered` says whether it
+//                   supplied the image or is still waiting to be generated
 // r.misses        → normalised keys that hit nothing: the corpus-growth queue
-// r.withoutImages → dishes that matched but have no picture yet
+// r.withoutImages → DISHES that matched but have no picture yet
 ```
 
 **The whole contract is that last rule.** An empty `images` is not an error
@@ -73,6 +87,82 @@ offline.
 ---
 
 ## How matching works
+
+### 0. The whole plate first — the hybrid
+
+Before anything is segmented, the **entire typed string** is looked up in a
+small catalogue of whole meals (`src/meals.ts`). A hit that has a photograph
+wins outright and returns **one** image; everything else falls through to the
+per-fragment path below, unchanged.
+
+```
+resolveMeal(idx, name)
+ ├─ 1. the WHOLE string is a meal we have photographed   → that one image. done.
+ ├─ 2. otherwise                                         → fragments (§1–§3)
+ └─ 3. nothing resolves                                  → images: [] → render nothing
+```
+
+Step 1 is conditional on the **image existing**, not on the meal matching. A
+meal entry with no picture yet falls to step 2, so adding a meal can never take
+away dish images that were already rendering. It is reported as
+`meal.rendered === false` — never by being mixed into `withoutImages`, which
+means "a *dish* that matched and has no picture".
+
+#### Why both, measured
+
+| | |
+|---|---|
+| Real `Meal` rows | 37 |
+| Distinct meal strings | **28** — they barely repeat |
+| Dishes covering all 28, and every future combination | **25** |
+
+Per-meal alone does not scale: the combination space is unbounded and most
+images would be used once — `Dal + 1 roti + mixed veg sabzi`,
+`Dal + 1 roti + sabzi` and `Dal + 1 roti + sprouts salad` are three
+near-identical plates typed three ways. Per-dish alone does not look like a
+meal. So per-dish is the base, and the handful of plates that actually repeat
+get a real photograph. **6 meals** ship: four that repeat in the logs, two that
+are standing plan entries.
+
+#### It is the same exact lookup, and it must be
+
+Meal strings are long and free-text, so the pull toward scoring is stronger
+here than anywhere else in this repo. It is refused for a stronger reason. The
+ordering the design commits to is
+
+> **right meal · > · right fragments · > · nothing · > · wrong meal**
+
+A wrong *dish* photo misrepresents a third of a row. A wrong *meal* photo
+misrepresents all of it, while claiming to show the whole thing. So a near miss
+— a component added, removed, swapped, or the same words reordered — falls back
+to fragments, which is exactly what an exact map lookup does when it misses.
+Word order is significant for the same reason: sorting tokens before lookup is
+one plausible-sounding step from making any bag of the same words the same
+plate.
+
+The one alias resting on judgement rather than on a string having been typed
+twice is `Dal + 1 roti + sabzi` → `dal-roti-mixed-veg-sabzi`, and it rests on
+the dish-level `sabzi` alias that Health's own `Food` table already justifies.
+It is flagged as such in `src/meals.ts`.
+
+#### One slug namespace, two lookup namespaces
+
+Meals and dishes **share one slug namespace**, because the slug is the URL and
+both are served from the same `corpus/images/<slug>/` tree — two entries
+claiming `greek-yogurt` would silently fight over one directory. `loadIndex`
+throws on that, `buildIndex` therefore cannot write it, and `npm run check`
+reports it rather than crashing.
+
+Their **lookup tables are separate**, because they answer different questions:
+`byMealKey` is consulted once against the whole string, `byKey` once per
+fragment. Merged, a fragment could tier-1 hit a meal — a third of a plate
+returning a picture of the whole plate. A key claimed by *both* is fatal too:
+one string cannot mean a dish at fragment level and a meal at row level.
+
+A meal must compose **at least two known dishes** (`buildIndex` enforces it).
+A single dish typed alone is a dish, however often it repeats —
+`Whey shake (1.5 scoop)` is the third most-logged string and deliberately has
+no meal entry.
 
 ### 1. Segment — a meal is not a dish
 
@@ -145,6 +235,12 @@ answer is *not* random.
 **A dish** — add an entry to `src/dishes.ts`, `npm run build`. Aliases are
 written as a human would type them and normalised at build time.
 
+**A meal** — add an entry to `src/meals.ts`, `npm run build`. Same rules, two
+extra ones: the slug must not collide with a dish slug (fatal), and the meal
+must compose at least two known dishes (also fatal). Add a meal only when the
+**whole string** repeats — a plate eaten once is answered perfectly well by its
+dishes.
+
 **An image** — **drop it in `inbox/` and run `npm run ingest`.** See below.
 
 **Never rename a slug.** It is the URL. Add an alias instead.
@@ -170,7 +266,7 @@ wrong-format file cannot reach the corpus. `AGENTS.md` is what Codex reads;
 
 | | |
 |---|---|
-| `npm run missing` | Dishes with no image, each with its prompt already assembled from `STYLE.md`'s fixed prefix + the dish name and portion. `--demand` orders by how often the dish appears in the 37 real `Meal` rows; `--db` refreshes portions from Health's `Food` table; `--prompts` prints prompts alone; `--limit N`. |
+| `npm run missing` | **Two queues** — dishes with no image and meals with no image — each entry with its prompt already assembled from the right `STYLE.md` prefix (a meal has its own; a meal shot with the dish prompt is one bowl of something). A meal entry also prints `must show:` its components. `--demand` orders dishes by real-log frequency and meals by `loggedTimes`; `--db` refreshes portions from Health's `Food` table; `--dishes`/`--meals` select one queue; `--prompts` prints prompts alone; `--limit N`. |
 | `npm run ingest` | Per file: validates the filename against the catalogue, centre-crops to 4:3, writes every ladder rung the source supports **without upscaling** (400×300 mandatory), encodes WebP, steps quality down until each rung is under budget, strips all metadata, writes a `meta.json` sidecar carrying `styleVersion`, and rebuilds `index.json`. `--dry` writes nothing; `--keep` leaves the source in `inbox/`; `--budget-scale`. |
 | `npm run check` | The drift detector. Every index entry: file exists · exact dimensions · WebP · under budget · no EXIF/ICC/IPTC/XMP · has a sidecar. Every file on disk: accounted for, contiguous variant numbering, no orphans. `--style v1` also lists images not on that style version. |
 
@@ -205,7 +301,8 @@ to find its own work (`npm run check -- --style v2`).
 src/normalise.ts      noise removal. Never decides meaning.
 src/segment.ts        hard/soft separators
 src/dishes.ts         THE CATALOGUE — 25 dishes, 99 keys, hand-maintained
-src/resolve.ts        the three tiers
+src/meals.ts          THE MEAL CATALOGUE — 6 whole plates, 9 keys
+src/resolve.ts        the whole-meal step, then the three fragment tiers
 src/variant.ts        deterministic pick + URL construction
 src/index-schema.ts   index.json shape, loadIndex, size ladder
 src/build.ts          catalogue + disk → index
@@ -222,8 +319,38 @@ scripts/report-real-meals.mjs
 scripts/missing.mjs   the generation queue
 scripts/ingest.mjs    inbox → corpus, the enforcement step
 scripts/check.mjs     the drift detector
-test/                 23 tests; fixture = the 37 real Meal names
+test/                 38 tests; fixture = the 37 real Meal names
 ```
+
+Meals go through the pipeline **identically** to dishes — same images tree, same
+crop, same ladder, same budgets, same sidecar, same orphan detection. The only
+thing that differs is which STYLE.md prefix `npm run missing` prints for them.
+A second code path for meals would be a second set of rules free to fall out of
+step with the first.
+
+### The meal catalogue's scope
+
+Six entries, from demand rather than imagination — the same rule the dish
+catalogue follows:
+
+| slug | logged |
+|---|---|
+| `oats-with-milk-boiled-eggs` | 3× |
+| `greek-yogurt-almonds` | 3× |
+| `greek-yogurt-banana` | 2× |
+| `dal-roti-sprouts-salad` | 2× |
+| `dal-roti-mixed-veg-sabzi` | 1× — standing plan entry |
+| `paneer-bhurji-roti-salad` | 1× — standing plan entry |
+
+Strings deliberately **not** taken are listed with their reason in
+`MEALS_NOT_TAKEN` (`src/meals.ts`): the single dishes (`Whey shake`,
+`Greek yogurt 200g`, `Apple`) and the one row carrying a brand.
+
+`paneer-bhurji-roti-salad` is worth noting: its "salad" component is a
+deliberate dish-level refusal, so it composes only two *known* dishes and the
+third is recorded in `unresolvedParts`. That is the case where a meal
+photograph is strictly better than a strip — it shows the salad that was
+actually on the plate, which is precisely what a generic salad photo could not.
 
 ### The catalogue's scope
 
@@ -252,6 +379,8 @@ Health rather than in the matcher.
 | A database | A few hundred rows that change only on a code change. `globalExercises.ts` already made and documented this exact call. |
 | On-demand resizing | A fixed four-rung ladder covers every slot Health has. Arbitrary sizing is what forces compute into a static project. |
 | A category fallback image | A generic curry standing in for aloo palak is a wrong answer wearing a right answer's clothes. |
+| A meal image for a plate typed once | The combination space is unbounded — 28 distinct strings from 37 rows. A meal earns a photograph by repeating; everything else is answered by its dishes. |
+| Fuzzy meal matching | The same refusal as fuzzy dish matching, for higher stakes: a wrong meal photo misrepresents the whole row, not a third of it. |
 | A random endpoint | Picsum's headline feature and our anti-feature. |
 | Nutrition data | A different project. Wrong numbers in a health app are a safety issue, not a cosmetic one. Foodsum returns pictures. |
 | Third-party food photos | A corpus we generate has no attribution obligation and no per-file licence audit. Health's exercise art needed a 4,000-word attribution document to stay compliant. |
@@ -264,7 +393,8 @@ Health rather than in the matcher.
 
 ## What is not built
 
-- **The corpus.** Zero images. This is the long pole. The *pipeline* that
+- **The corpus.** Zero images — dishes and meals alike, so the hybrid's step 1
+  has never once fired against a real file. This is the long pole. The *pipeline* that
   turns a generated picture into a corpus entry is built and verified
   (`missing` → `ingest` → `check`, above); what has not happened is a single
   real generated food image going through it, so nothing here establishes that

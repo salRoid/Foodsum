@@ -19,7 +19,7 @@ import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { loadIndex } from '../src/index-schema.ts';
-import { resolveMealFragments } from '../src/resolve.ts';
+import { resolveMealFragments, resolveMealEntry } from '../src/resolve.ts';
 import { REFUSED } from '../src/dishes.ts';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
@@ -44,8 +44,21 @@ const perDish = new Map();
 const missCounts = new Map();
 let fullyResolvedRows = 0;
 let rowsWithAtLeastOne = 0;
+// Meal coverage is counted BESIDE the fragment numbers, never folded into
+// them. The fragment resolve rate is the recorded, verified figure for the
+// per-dish matcher, and meals must not be able to flatter it — a meal-level hit
+// would otherwise turn three fragments into one and change the denominator.
+const perMeal = new Map();
+let mealHitRows = 0;
 
 for (const name of rows) {
+  const mealHit = resolveMealEntry(idx, name);
+  if (mealHit) {
+    mealHitRows++;
+    if (!perMeal.has(mealHit.meal.slug)) perMeal.set(mealHit.meal.slug, new Set());
+    perMeal.get(mealHit.meal.slug).add(`${name}  [${mealHit.tier}]`);
+  }
+
   const frags = resolveMealFragments(idx, name);
   fragCount += frags.length;
   let any = false;
@@ -75,6 +88,21 @@ console.log(`  RESOLVE RATE          ${pct(resolved)}\n`);
 console.log(`Rows fully resolved     ${fullyResolvedRows} / ${rows.length}`);
 console.log(`Rows with >= 1 image    ${rowsWithAtLeastOne} / ${rows.length}`);
 console.log(`Distinct dishes hit     ${perDish.size} / ${idx.raw.dishes.length}\n`);
+
+const allMeals = idx.raw.meals ?? [];
+console.log('── WHOLE-MEAL hits (the hybrid: a real photo of the plate wins) ──');
+console.log(`Meal catalogue          ${allMeals.length}`);
+console.log(`Rows matching a meal    ${mealHitRows} / ${rows.length}`);
+console.log(`Meals hit               ${perMeal.size} / ${allMeals.length}`);
+for (const slug of [...perMeal.keys()].sort()) {
+  console.log(`\n  ${slug}`);
+  for (const t of [...perMeal.get(slug)].sort()) console.log(`    ← ${t}`);
+}
+const coldMeals = allMeals.filter((m) => !perMeal.has(m.slug)).map((m) => m.slug);
+console.log(`\nMeals with no real-data hit: ${coldMeals.join(', ') || '(none)'}`);
+console.log(
+  'A meal with no hit is not a fault — it may be a standing plan entry logged once.\n',
+);
 
 console.log('── every resolution, grouped by dish — read this down for wrong matches ──');
 for (const slug of [...perDish.keys()].sort()) {

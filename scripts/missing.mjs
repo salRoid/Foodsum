@@ -6,20 +6,31 @@
 // `corpus/index.json` rather than re-deriving the catalogue, so neither can
 // disagree with what a consumer actually loads.
 //
-//   npm run missing                 every dish with no image, with its prompt
+//   npm run missing                 every dish AND meal with no image, + prompt
 //   npm run missing -- --db         refresh portions from health_db_local first
 //   npm run missing -- --demand     order by how often the dish appears in the
 //                                   37 real Meal rows — generate what is eaten
 //   npm run missing -- --prompts    prompts only, one per line, nothing else
-//   npm run missing -- --limit 5    first N
+//   npm run missing -- --limit 5    first N of each queue
+//   npm run missing -- --dishes     dishes only
+//   npm run missing -- --meals      meals only
+//
+// TWO QUEUES, ONE COMMAND. Dishes are the base of the corpus and meals are the
+// handful of whole plates that repeat often enough to deserve one photograph
+// (see src/meals.ts). They are listed separately because they are generated
+// from DIFFERENT prompts — STYLE.md carries a dish prefix and a meal prefix,
+// and a meal shot with the dish prompt is one bowl of something.
 //
 // The prompt is assembled from STYLE.md's fixed prefix plus the dish name and
-// its portion. NEVER hand-edit a prompt: STYLE.md is explicit that rewriting
-// the prefix per dish is precisely how a set drifts.
+// its portion (or, for a meal, its name verbatim). NEVER hand-edit a prompt:
+// STYLE.md is explicit that rewriting the prefix per subject is precisely how a
+// set drifts.
 
 import { execFileSync } from 'node:child_process';
 
-import { readStyle, promptFor, dishText, readJson, INDEX_JSON, PORTIONS_JSON } from './lib/style.mjs';
+import {
+  readStyle, promptFor, mealPromptFor, dishText, readJson, INDEX_JSON, PORTIONS_JSON,
+} from './lib/style.mjs';
 import { loadIndex } from '../src/index-schema.ts';
 import { resolveMealFragments } from '../src/resolve.ts';
 import { readFileSync } from 'node:fs';
@@ -71,47 +82,87 @@ if (has('--demand')) {
   }
 }
 
-// ── the queue ───────────────────────────────────────────────────────────────
-let missing = idx.raw.dishes.filter((d) => d.variants === 0);
+// ── the two queues ──────────────────────────────────────────────────────────
+const allDishes = idx.raw.dishes;
+const allMeals = idx.raw.meals ?? [];
+const WANT_DISHES = !has('--meals');
+const WANT_MEALS = !has('--dishes');
+
+let missingDishes = WANT_DISHES ? allDishes.filter((d) => d.variants === 0) : [];
+let missingMeals = WANT_MEALS ? allMeals.filter((m) => m.variants === 0) : [];
+
 if (has('--demand')) {
-  missing.sort((a, b) => (demand.get(b.slug) ?? 0) - (demand.get(a.slug) ?? 0) || a.slug.localeCompare(b.slug));
+  missingDishes.sort((a, b) => (demand.get(b.slug) ?? 0) - (demand.get(a.slug) ?? 0) || a.slug.localeCompare(b.slug));
+  // A meal carries its own demand — `loggedTimes`, the number of times that
+  // exact string appears in the real rows. It is not derived from fragments,
+  // because a meal is only worth photographing when the WHOLE string repeats.
+  missingMeals.sort((a, b) => (b.loggedTimes ?? 0) - (a.loggedTimes ?? 0) || a.slug.localeCompare(b.slug));
 }
 const limit = Number(val('--limit', 0));
-if (limit > 0) missing = missing.slice(0, limit);
+if (limit > 0) {
+  missingDishes = missingDishes.slice(0, limit);
+  missingMeals = missingMeals.slice(0, limit);
+}
 
 if (has('--prompts')) {
-  for (const d of missing) console.log(promptFor(style, dishText(d, portions)));
+  for (const d of missingDishes) console.log(promptFor(style, dishText(d, portions)));
+  for (const m of missingMeals) console.log(mealPromptFor(style, m.name));
   process.exit(0);
 }
 
-const total = idx.raw.dishes.length;
-const have = total - idx.raw.dishes.filter((d) => d.variants === 0).length;
+const haveDishes = allDishes.filter((d) => d.variants > 0).length;
+const haveMeals = allMeals.filter((m) => m.variants > 0).length;
 
 console.log(`\n── foodsum · images still to generate ── style ${style.styleVersion} ──\n`);
-console.log(`Catalogue      ${total} dishes`);
-console.log(`With an image  ${have}`);
-console.log(`MISSING        ${total - have}${limit > 0 ? `  (showing ${missing.length})` : ''}\n`);
+console.log(`Dishes  ${allDishes.length} in the catalogue · ${haveDishes} with an image · MISSING ${allDishes.length - haveDishes}`);
+console.log(`Meals   ${allMeals.length} in the catalogue · ${haveMeals} with an image · MISSING ${allMeals.length - haveMeals}\n`);
 
-if (missing.length === 0) {
-  console.log('  Nothing to generate. Every dish in the catalogue has at least one image.\n');
+if (missingDishes.length === 0 && missingMeals.length === 0) {
+  console.log('  Nothing to generate in the selected queue(s).\n');
   process.exit(0);
 }
 
 console.log('For each: generate ONE image, look at it, and drop it in `inbox/<slug>.png`.');
-console.log('Then run `npm run ingest`. Read AGENTS.md and STYLE.md first.\n');
+console.log('Then run `npm run ingest`. Read AGENTS.md and STYLE.md first.');
+console.log('Dish and meal prompts are DIFFERENT prefixes. Copy the one printed under the entry.');
 
-for (const d of missing) {
-  const n = demand.get(d.slug);
-  const tags = [
-    d.fromHealthFoodTable ? "Health Food row" : null,
-    portions[d.slug] ? null : 'NO PORTION KNOWN',
-    n ? `${n}× in real logs` : null,
-  ].filter(Boolean);
-  console.log(`\n  ${d.slug}${tags.length ? `   [${tags.join(' · ')}]` : ''}`);
-  console.log(`  inbox/${d.slug}.png`);
-  console.log(`  ${promptFor(style, dishText(d, portions))}`);
+if (missingDishes.length) {
+  console.log(`\n\n══ DISHES ══ (${missingDishes.length}) — one dish, one vessel\n`);
+  for (const d of missingDishes) {
+    const n = demand.get(d.slug);
+    const tags = [
+      d.fromHealthFoodTable ? 'Health Food row' : null,
+      portions[d.slug] ? null : 'NO PORTION KNOWN',
+      n ? `${n}× in real logs` : null,
+    ].filter(Boolean);
+    console.log(`\n  ${d.slug}${tags.length ? `   [${tags.join(' · ')}]` : ''}`);
+    console.log(`  inbox/${d.slug}.png`);
+    console.log(`  ${promptFor(style, dishText(d, portions))}`);
+  }
+
+  console.log('\n── hard exclusions · DISHES (STYLE.md, verbatim — reject if any apply) ──');
+  for (const e of style.exclusions) console.log(`  · ${e}`);
 }
 
-console.log('\n── hard exclusions (STYLE.md, verbatim — reject the image if any apply) ──');
-for (const e of style.exclusions) console.log(`  · ${e}`);
-console.log('\nA wrong dish is worse than no image. When in doubt, reject.\n');
+if (missingMeals.length) {
+  console.log(`\n\n══ MEALS ══ (${missingMeals.length}) — a composed plate, several components\n`);
+  for (const m of missingMeals) {
+    const tags = [
+      m.loggedTimes ? `logged ${m.loggedTimes}×` : null,
+      `${m.dishes.length} known dish${m.dishes.length === 1 ? '' : 'es'}`,
+    ].filter(Boolean);
+    console.log(`\n  ${m.slug}   [${tags.join(' · ')}]`);
+    console.log(`  inbox/${m.slug}.png`);
+    // Every component must be IN THE FRAME. A missing one makes the picture an
+    // image of a different meal, and it claims to show the whole row.
+    console.log(`  must show: ${[...m.dishes, ...(m.unresolvedParts ?? [])].join(' · ')}`);
+    console.log(`  ${mealPromptFor(style, m.name)}`);
+  }
+
+  console.log('\n── hard exclusions · MEALS (STYLE.md, verbatim — reject if any apply) ──');
+  for (const e of style.mealExclusions) console.log(`  · ${e}`);
+  console.log('  · a missing component — a plate short one item is a picture of a DIFFERENT meal');
+}
+
+console.log('\nA wrong dish is worse than no image. A wrong MEAL is worse still — it');
+console.log('misrepresents the whole row rather than a third of it. When in doubt, reject.\n');

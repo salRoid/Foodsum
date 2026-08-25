@@ -7,12 +7,16 @@ import { readdirSync, existsSync, statSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
 import { DISHES, type Dish } from './dishes.ts';
+import { MEALS, type Meal } from './meals.ts';
 import { normaliseAlias } from './normalise.ts';
+import { resolveMealFragments } from './resolve.ts';
 import {
   SIZES,
   FORMATS,
   loadIndex,
   type FoodsumIndex,
+  type IndexDish,
+  type IndexMeal,
   type VariantMeta,
 } from './index-schema.ts';
 
@@ -73,38 +77,99 @@ export function buildIndex(
   imagesRoot: string,
   dishes: Dish[] = DISHES,
   baseUrl = '/i',
+  meals: Meal[] = MEALS,
 ): FoodsumIndex {
+  const dishEntries: IndexDish[] = dishes.map((d) => {
+    const keys = new Set([
+      normaliseAlias(d.slug.replace(/-/g, ' ')),
+      normaliseAlias(d.name),
+      ...d.aliases.map(normaliseAlias),
+    ]);
+    keys.delete('');
+    const variantMeta = readVariantMeta(imagesRoot, d.slug);
+    return {
+      slug: d.slug,
+      name: d.name,
+      category: d.category,
+      keys: [...keys].sort(),
+      variants: countVariants(imagesRoot, d.slug),
+      ...(d.fromHealthFoodTable ? { fromHealthFoodTable: true } : {}),
+      // Omitted when there are no images, so an empty corpus's index is
+      // byte-identical to what it was before this field existed.
+      ...(variantMeta.length ? { variantMeta } : {}),
+    };
+  });
+
+  // A meal's COMPONENTS are derived, never hand-written: the meal name is run
+  // back through the real dish matcher, against a dish-only index. Two things
+  // fall out of that, and both are the reason it is done this way rather than
+  // by listing the slugs in `meals.ts`:
+  //   · a typo in a meal name is caught here, because the components stop
+  //     resolving — a hand-written list would agree with itself forever;
+  //   · the components cannot drift from what the matcher would actually say
+  //     about the same string.
+  const dishOnly = loadIndex({
+    version: 1,
+    generatedAt: '',
+    baseUrl,
+    sizes: [...SIZES],
+    formats: [...FORMATS],
+    dishes: dishEntries,
+  });
+
+  const mealEntries: IndexMeal[] = meals.map((m) => {
+    const keys = new Set([normaliseAlias(m.name), ...m.aliases.map(normaliseAlias)]);
+    keys.delete('');
+
+    const frags = resolveMealFragments(dishOnly, m.name);
+    const components = [...new Set(frags.filter((f) => f.dish).map((f) => f.dish!.slug))];
+    const unresolvedParts = frags.filter((f) => !f.dish && f.key).map((f) => f.key);
+
+    // A meal must COMPOSE. One dish typed alone is a dish, and giving it a
+    // second slug would mean two URLs for one picture of one thing — with
+    // nothing to say which of them a consumer should have asked for.
+    if (components.length < 2) {
+      throw new Error(
+        `foodsum: meal "${m.slug}" composes only ${components.length} known dish(es) ` +
+          `(${components.join(', ') || 'none'}). A meal is a plate of at least two — ` +
+          'a single dish belongs in dishes.ts.',
+      );
+    }
+
+    // The meal slug must not be derivable from the components alone by luck:
+    // it is the URL, so it is hand-written, and this only checks it is sane.
+    if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(m.slug)) {
+      throw new Error(`foodsum: meal slug "${m.slug}" is not URL-safe`);
+    }
+
+    const variantMeta = readVariantMeta(imagesRoot, m.slug);
+    return {
+      kind: 'meal' as const,
+      slug: m.slug,
+      name: m.name,
+      keys: [...keys].sort(),
+      variants: countVariants(imagesRoot, m.slug),
+      dishes: components,
+      ...(unresolvedParts.length ? { unresolvedParts } : {}),
+      ...(m.loggedTimes ? { loggedTimes: m.loggedTimes } : {}),
+      ...(variantMeta.length ? { variantMeta } : {}),
+    };
+  });
+
   const index: FoodsumIndex = {
     version: 1,
     generatedAt: new Date().toISOString().slice(0, 10),
     baseUrl,
     sizes: [...SIZES],
     formats: [...FORMATS],
-    dishes: dishes.map((d) => {
-      const keys = new Set([
-        normaliseAlias(d.slug.replace(/-/g, ' ')),
-        normaliseAlias(d.name),
-        ...d.aliases.map(normaliseAlias),
-      ]);
-      keys.delete('');
-      const variantMeta = readVariantMeta(imagesRoot, d.slug);
-      return {
-        slug: d.slug,
-        name: d.name,
-        category: d.category,
-        keys: [...keys].sort(),
-        variants: countVariants(imagesRoot, d.slug),
-        ...(d.fromHealthFoodTable ? { fromHealthFoodTable: true } : {}),
-        // Omitted when there are no images, so an empty corpus's index is
-        // byte-identical to what it was before this field existed.
-        ...(variantMeta.length ? { variantMeta } : {}),
-      };
-    }),
+    dishes: dishEntries,
+    ...(mealEntries.length ? { meals: mealEntries } : {}),
   };
 
-  // Validate before returning: `loadIndex` throws on a duplicate slug or a
-  // contested alias. Emitting an index that cannot be loaded would push the
-  // failure into every consumer instead of stopping it at the source.
+  // Validate before returning: `loadIndex` throws on a duplicate slug, a
+  // contested alias, and — now — a slug or key claimed by both a dish and a
+  // meal. Emitting an index that cannot be loaded would push the failure into
+  // every consumer instead of stopping it at the source.
   loadIndex(index);
   return index;
 }

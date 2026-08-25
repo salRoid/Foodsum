@@ -34,9 +34,14 @@ the dish from the background. An image without it is rejected.
 
 ## The prompt contract
 
-A generation prompt is **fixed prefix + dish**. The prefix is versioned and
-lives here; only the dish part changes. Never rewrite the prefix per dish —
+A generation prompt is **fixed prefix + subject**. There are exactly **two**
+prefixes — one for a single dish, one for a composed meal — both versioned,
+both living here; only the subject changes. Never rewrite a prefix per subject:
 that is precisely how a set drifts.
+
+`scripts/lib/style.mjs` parses both out of this file by their exact heading, so
+a prefix has one definition and the section order of this document cannot
+decide which one an image was generated from.
 
 ### Fixed prefix (v1)
 
@@ -54,6 +59,55 @@ Only the dish name and its **portion**, taken from the `Food` row — the names
 already carry it (`Dal (1 katori, cooked)`, `Roti (1 medium, no ghee)`). The
 portion is part of the prompt because a picture of a mountain of rice against a
 row that says "1 katori" is a lie the user will act on.
+
+---
+
+## The meal variant — a composed plate
+
+Some entries in the corpus are whole **meals**, not dishes: a plate that gets
+eaten repeatedly and deserves one real photograph rather than a strip of three
+dish pictures side by side. See `src/meals.ts` for which and why.
+
+A meal image is **the same style**, differing only in what is on the surface.
+Angle, vessel, background, light, contact shadow and every accuracy rule below
+are unchanged — a meal photo that looked like a different set would defeat the
+entire point of having one prefix.
+
+### Fixed prefix — meal (v1)
+
+> Top-down 90° overhead photograph of one complete meal of {meal}, arranged
+> together on a plain matte white ceramic plate, with any wet or loose
+> component in its own small plain matte white ceramic bowl set beside the
+> plate. Seamless flat light warm-grey background, no surface texture, no
+> cloth, no props. Soft diffuse even lighting from above with a soft contact
+> shadow under every vessel. The meal centred as one arrangement, filling
+> roughly 80% of the frame. Realistic home-cooked portions as stated.
+> Photographic, natural colour, no styling flourishes.
+
+**Per meal, only the meal name goes in `{meal}` — verbatim, portions
+included.** A meal carries its portions inside its own name (`Greek yogurt
+200g + 8 almonds`), so unlike a dish it takes nothing from the `Food` table.
+
+### Hard exclusions — meals
+
+Two of the dish exclusions cannot apply to a plate that is several things by
+definition, so for a meal image they are **replaced** by narrower rules. Every
+other exclusion below applies in full and unchanged.
+
+- hands, people, or any part of a body
+- cutlery, chopsticks, napkins, or glasses
+- any vessel that is not holding part of the named meal
+- text, labels, watermarks, or signage
+- garnish beyond what the dish genuinely has (no scattered herbs "for styling")
+- a patterned, coloured, wooden, marble, or textured surface
+- steam, splashes, motion, or a "hero" restaurant treatment
+- a visible frame edge, border, or vignette
+
+**A missing component is a wrong meal.** `Dal + 1 roti + sprouts salad` with no
+salad in frame is not a slightly imperfect image of that meal; it is an image
+of a different one, and it is worse than a dish strip because it claims to show
+the whole row. Count the components against the name before accepting it —
+`npm run missing` prints them.
 
 ---
 
@@ -101,10 +155,12 @@ normalise.
 
 ## Workflow
 
-1. `npm run missing` — lists dishes with no image, with their prompt already
-   assembled from the prefix + the row.
+1. `npm run missing` — lists **dishes** and **meals** with no image, each with
+   its prompt already assembled from the right prefix. The two prefixes are not
+   interchangeable; copy the one printed under the entry.
 2. Generate. Drop the raw file into `inbox/<slug>.<ext>`.
-3. **Look at it.** Reject wrong dishes here, not later.
+3. **Look at it.** Reject wrong dishes here, not later. For a meal, count its
+   components against the `must show:` line first.
 4. `npm run ingest` — crops, resizes, converts, strips metadata, names the file,
    writes the index entry with `styleVersion: v1`, and fails loudly if anything
    does not meet the table above.

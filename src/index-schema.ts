@@ -52,6 +52,32 @@ export interface IndexDish {
   variantMeta?: VariantMeta[];
 }
 
+/**
+ * A whole MEAL — one photograph of a composed plate.
+ *
+ * Structurally almost a dish, and deliberately so: it lives in the same
+ * `corpus/images/<slug>/` tree, carries the same `variants`/`variantMeta`, and
+ * goes through the same ingest and check. The only shape differences are
+ * `kind`, which makes the two distinguishable in one flat URL namespace, and
+ * `dishes`, the components resolved at build time (diagnostic, and the guard
+ * that a meal composes at least two dishes we know).
+ */
+export interface IndexMeal {
+  kind: 'meal';
+  slug: string;
+  name: string;
+  /** Whole-meal keys, ALREADY NORMALISED at build time. Includes the name. */
+  keys: string[];
+  variants: number;
+  /** Dish slugs this meal composes, derived through the dish matcher at build. */
+  dishes: string[];
+  /** Fragments of the meal name that reached no dish. Usually a refusal like "salad". */
+  unresolvedParts?: string[];
+  /** How often this exact string appears in the 37 real Meal rows. */
+  loggedTimes?: number;
+  variantMeta?: VariantMeta[];
+}
+
 export interface FoodsumIndex {
   version: 1;
   generatedAt: string;
@@ -60,13 +86,25 @@ export interface FoodsumIndex {
   sizes: readonly Size[];
   formats: readonly Format[];
   dishes: IndexDish[];
+  /**
+   * Whole-meal entries. OPTIONAL, so an index written before meals existed
+   * still loads and behaves exactly as it did — the hybrid is additive, and a
+   * consumer on an older index simply never gets a meal hit.
+   */
+  meals?: IndexMeal[];
 }
 
-/** A dish plus its O(1) lookup table, built once per index load. */
+/** An index plus its O(1) lookup tables, built once per index load. */
 export interface LoadedIndex {
   raw: FoodsumIndex;
+  /** Dish slugs only. NOT meals — a fragment must never tier-1 hit a meal. */
   bySlug: Map<string, IndexDish>;
+  /** Dish alias keys only. */
   byKey: Map<string, IndexDish>;
+  /** Meal slugs only. */
+  byMealSlug: Map<string, IndexMeal>;
+  /** Whole-meal alias keys only. Consulted BEFORE fragmentation, never during. */
+  byMealKey: Map<string, IndexMeal>;
 }
 
 /**
@@ -77,6 +115,20 @@ export interface LoadedIndex {
  * A DUPLICATE KEY IS FATAL. Two dishes claiming the same alias means the
  * resolution of that string depends on array order, which is exactly the class
  * of quiet ambiguity this matcher exists to refuse.
+ *
+ * ── ONE SLUG NAMESPACE, TWO LOOKUP NAMESPACES ──
+ * Meals and dishes share ONE slug namespace and a duplicate across the two is
+ * fatal, because the slug is the URL and both kinds are served out of the same
+ * `corpus/images/<slug>/` tree — two entries claiming `greek-yogurt` would
+ * silently fight over one directory, and nothing downstream could tell.
+ *
+ * Their LOOKUP tables are separate, because they answer different questions:
+ * `byMealKey` is consulted once against the whole typed string, `byKey` is
+ * consulted per fragment. Merging them would let a fragment tier-1 hit a meal
+ * (a third of a plate returning a picture of the whole plate) and let a whole
+ * string hit a dish. A key claimed by both a meal and a dish is therefore also
+ * fatal: the same string would mean two different things depending only on
+ * which stage of resolution looked at it.
  */
 export function loadIndex(raw: unknown): LoadedIndex {
   const idx = raw as FoodsumIndex;
@@ -86,6 +138,8 @@ export function loadIndex(raw: unknown): LoadedIndex {
 
   const bySlug = new Map<string, IndexDish>();
   const byKey = new Map<string, IndexDish>();
+  const byMealSlug = new Map<string, IndexMeal>();
+  const byMealKey = new Map<string, IndexMeal>();
 
   for (const d of idx.dishes) {
     if (!d.slug || !Array.isArray(d.keys)) {
@@ -104,5 +158,35 @@ export function loadIndex(raw: unknown): LoadedIndex {
     }
   }
 
-  return { raw: idx, bySlug, byKey };
+  for (const m of idx.meals ?? []) {
+    if (!m.slug || !Array.isArray(m.keys)) {
+      throw new Error(`foodsum: malformed meal entry ${JSON.stringify(m)}`);
+    }
+    if (byMealSlug.has(m.slug)) throw new Error(`foodsum: duplicate meal slug "${m.slug}"`);
+    if (bySlug.has(m.slug)) {
+      throw new Error(
+        `foodsum: slug "${m.slug}" is claimed by both a dish and a meal — ` +
+          'they share one URL namespace and one images directory',
+      );
+    }
+    byMealSlug.set(m.slug, m);
+    for (const k of m.keys) {
+      const clash = byMealKey.get(k);
+      if (clash && clash.slug !== m.slug) {
+        throw new Error(
+          `foodsum: meal key "${k}" claimed by both "${clash.slug}" and "${m.slug}"`,
+        );
+      }
+      const dishClash = byKey.get(k);
+      if (dishClash) {
+        throw new Error(
+          `foodsum: key "${k}" is claimed by dish "${dishClash.slug}" and meal "${m.slug}" — ` +
+            'one string cannot mean a dish at fragment level and a meal at row level',
+        );
+      }
+      byMealKey.set(k, m);
+    }
+  }
+
+  return { raw: idx, bySlug, byKey, byMealSlug, byMealKey };
 }

@@ -33,14 +33,35 @@ const BUDGET_SCALE = Number(val('--budget-scale', 1));
 
 const style = readStyle();
 const sharp = await loadSharp();
-const idx = loadIndex(readJson(INDEX_JSON));
+
+// `loadIndex` is where the STRUCTURAL invariants live — a duplicate slug, a
+// contested alias, and a slug or key claimed by BOTH a dish and a meal. It
+// throws, which is right for a consumer and wrong for a report, so it is caught
+// here and printed as a check failure. A dish and a meal cannot reach this
+// state through `npm run build` (which validates before writing), but a
+// hand-edited index can, and that is exactly what this script exists to notice.
+let idx;
+try {
+  idx = loadIndex(readJson(INDEX_JSON));
+} catch (err) {
+  console.error(`\n── foodsum · corpus check ── style ${style.styleVersion} ──\n`);
+  console.error('  1 PROBLEM(S):\n');
+  console.error(`  ✗ corpus/index.json will not load: ${err.message}`);
+  console.error('');
+  process.exit(1);
+}
 
 const problems = [];
 const warnings = [];
 let filesChecked = 0;
 
 // ── every index entry must be true on disk ──────────────────────────────────
-for (const dish of idx.raw.dishes) {
+// Dishes and meals are checked IDENTICALLY. They share one images tree, one
+// URL shape, one ingest and one size ladder, so a second loop here would be a
+// second set of rules free to fall out of step with the first.
+const entries = [...idx.raw.dishes, ...(idx.raw.meals ?? [])];
+
+for (const dish of entries) {
   const meta = dish.variantMeta ?? [];
 
   if (dish.variants !== meta.length) {
@@ -94,7 +115,7 @@ for (const dish of idx.raw.dishes) {
 // An orphan is not cosmetic. A folder for a slug that no longer exists is dead
 // weight in a published corpus; a stray file inside a variant folder is either
 // a rung the index does not know about (so nothing ever serves it) or debris.
-const known = new Map(idx.raw.dishes.map((d) => [d.slug, d]));
+const known = new Map(entries.map((d) => [d.slug, d]));
 if (existsSync(IMAGES)) {
   for (const entry of readdirSync(IMAGES)) {
     const p = join(IMAGES, entry);
@@ -103,7 +124,7 @@ if (existsSync(IMAGES)) {
       continue;
     }
     const dish = known.get(entry);
-    if (!dish) { problems.push(`corpus/images/${entry}/: not a slug in the catalogue — orphan folder`); continue; }
+    if (!dish) { problems.push(`corpus/images/${entry}/: not a dish or meal slug in the catalogue — orphan folder`); continue; }
 
     for (const vd of readdirSync(p)) {
       const vp = join(p, vd);
@@ -124,9 +145,15 @@ if (existsSync(IMAGES)) {
 }
 
 // ── report ──────────────────────────────────────────────────────────────────
-const total = idx.raw.dishes.reduce((n, d) => n + d.variants, 0);
+const meals = idx.raw.meals ?? [];
+const dishVariants = idx.raw.dishes.reduce((n, d) => n + d.variants, 0);
+const mealVariants = meals.reduce((n, m) => n + m.variants, 0);
 console.log(`\n── foodsum · corpus check ── style ${style.styleVersion} ──\n`);
-console.log(`  ${idx.raw.dishes.length} dishes · ${total} variants · ${filesChecked} image files verified\n`);
+console.log(
+  `  ${idx.raw.dishes.length} dishes (${dishVariants} variants) · ` +
+    `${meals.length} meals (${mealVariants} variants) · ` +
+    `${filesChecked} image files verified\n`,
+);
 
 for (const w of warnings) console.log(`  ! ${w}`);
 if (warnings.length) console.log('');
