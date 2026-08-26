@@ -127,11 +127,23 @@ inbox/<slug>.png
 - A second picture for the same dish: `inbox/<slug>-2.png` (ingest files it as
   the next variant automatically — do not choose a variant number yourself).
 - PNG, JPEG, WebP, TIFF and AVIF are all accepted as input.
-- **Generate the largest clean image you can.** Do not try to hit 400×300, or
-  4:3, or a file size — ingest normalises all of it. A square image is fine and
-  expected; it is centre-cropped. The one hard input requirement is that the
-  4:3 centre crop must be at least 400×300, so anything from ~512×512 upward is
-  safe. Bigger is better: larger sources populate more rungs of the size ladder.
+- **Generate SQUARE, at least 1200×1200.** Do not try to hit 400×300, or a
+  file size — ingest normalises all of it. But the source size is not a
+  nice-to-have, and this is the one instruction to get right:
+
+  Ingest centre-crops the same photograph **once per aspect ratio** — 4:3, 1:1
+  and 16:9 — and writes only the rungs the crop can supply **without
+  upscaling**. 1200×1200 is what fills all twelve. A smaller source ingests
+  perfectly happily and silently contributes fewer rungs.
+
+  **That failure is invisible until it reaches the app.** Health asks for the
+  **16:9** rungs by name, so a variant carrying only the 4:3 ladder resolves
+  correctly and then renders NOTHING — no error, no broken image. On
+  2026-08-26 that hid 24 of 38 variants; see `DECISIONS.md`.
+
+  **So: after every ingest, read the `✓` line and count the rungs. Twelve is
+  correct. Four means the source was too small — regenerate larger, do not
+  accept it.**
 
 **You may not add a dish or a meal.** A filename that is not a known slug is
 rejected. Adding either is a code change — `src/dishes.ts` or `src/meals.ts`,
@@ -148,4 +160,7 @@ npm run check        # every index entry true on disk, nothing unaccounted for
 npm test             # the matcher suite, including the staleness guard
 ```
 
-Both must pass before you report the work as done.
+Both must pass before you report the work as done — and so must the twelve-rung
+check above. `npm run check` does NOT catch a short ladder: it verifies that
+every entry in the index is true on disk, and a variant with four rungs is
+truthfully a variant with four rungs. Counting them is your job.

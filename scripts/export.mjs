@@ -158,11 +158,24 @@ if (has('--csv')) {
     // What ingest will do to the file, so the generating side knows what
     // survives: it centre-crops to 4:3 and never upscales.
     ingest: {
-      aspect: '4:3, centre crop',
+      // THREE aspects, not one. Ingest centre-crops the same photograph once
+      // per ladder; a consumer does not have one hole to fill — Health alone
+      // renders a dish in a 16:9 panel, a wide band and a card hero, and asks
+      // for the 16:9 rungs by name. A source that can only supply 4:3 ingests
+      // cleanly and then renders NOTHING in those slots, which is exactly how
+      // 24 of 38 variants went invisible on 2026-08-26 (DECISIONS.md).
+      aspects: idx.raw.aspects,
       sizes: idx.raw.sizes,
       canonical: '400x300',
-      minSourcePixels: '1200x900 to fill every rung; 400x300 is mandatory',
-      note: 'Save into inbox/ under the exact `file` name, then run `npm run ingest`.',
+      minSourcePixels:
+        'At least 1200x1200. Every rung of all three ladders then fills without ' +
+        'upscaling; 1254x1254 and 1448x1086 both do in practice. The binding ' +
+        'constraints are 1200x900 (4:3), 900x900 (1:1) and 1200x675 (16:9), each ' +
+        'taken from a centre crop of the source. Only the 4:3 ladder is mandatory: ' +
+        'a smaller source still ingests, silently contributes fewer rungs, and ' +
+        'upscaling is refused rather than faked.',
+      note: 'Save into inbox/ under the exact `file` name, then run `npm run ingest`. ' +
+        'Check its output lists twelve rungs — four means the source was too small for the 1:1 and 16:9 crops.',
     },
     counts: { dishes: dishes.length, meals: meals.length },
     dishes,
