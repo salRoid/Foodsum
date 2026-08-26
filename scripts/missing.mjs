@@ -8,8 +8,13 @@
 //
 //   npm run missing                 every dish AND meal with no image, + prompt
 //   npm run missing -- --db         refresh portions from health_db_local first
+//   npm run missing -- --dump       …from a droplet snapshot instead: EVERY
+//                                   user's rows. Take one with
+//                                   `cd ../Health && ./foodsum-dump.sh`
 //   npm run missing -- --demand     order by how often the dish appears in the
-//                                   37 real Meal rows — generate what is eaten
+//                                   real Meal rows — generate what is eaten.
+//                                   With --db/--dump that is the live table;
+//                                   without one it is the 37-row test fixture
 //   npm run missing -- --prompts    prompts only, one per line, nothing else
 //   npm run missing -- --limit 5    first N of each queue
 //   npm run missing -- --dishes     dishes only
@@ -26,13 +31,12 @@
 // STYLE.md is explicit that rewriting the prefix per subject is precisely how a
 // set drifts.
 
-import { execFileSync } from 'node:child_process';
-
 import {
   readStyle, promptFor, mealPromptFor, dishText, readJson, INDEX_JSON, PORTIONS_JSON,
 } from './lib/style.mjs';
+import { dbUrl, query, isLive, FOOD_SQL, MEALS_SQL } from './lib/db.mjs';
 import { loadIndex } from '../src/index-schema.ts';
-import { resolveMealFragments } from '../src/resolve.ts';
+import { resolveMealFragments, resolveMealEntry } from '../src/resolve.ts';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { ROOT } from './lib/style.mjs';
@@ -50,17 +54,14 @@ const idx = loadIndex(readJson(INDEX_JSON));
 // ── portions ────────────────────────────────────────────────────────────────
 const portions = { ...(readJson(PORTIONS_JSON, { portions: {} }).portions ?? {}) };
 
-if (has('--db')) {
+if (isLive(argv)) {
   // Health's `Food` table is a curated controlled vocabulary — its names carry
   // the portion in parentheses, which `normalise` strips, so resolving the row
   // name through THIS MATCHER is what maps a Food row onto a slug. No second
   // mapping table, no name-matching of our own.
-  const out = execFileSync('psql', [
-    'postgresql://salroid@localhost/health_db_local',
-    '-At', '-c', 'SELECT name FROM "Food" ORDER BY name;',
-  ]).toString();
+  // One definition of where the data lives — see scripts/lib/db.mjs.
   let hits = 0;
-  for (const name of out.split('\n').filter((l) => l.trim())) {
+  for (const name of query(dbUrl(argv), FOOD_SQL)) {
     const m = name.match(/\(([^)]*)\)\s*$/);
     if (!m) continue;
     const frags = resolveMealFragments(idx, name);
@@ -68,19 +69,44 @@ if (has('--db')) {
       if (f.dish) { portions[f.dish.slug] = m[1].trim(); hits++; }
     }
   }
-  console.error(`(--db: read Health's Food table, matched ${hits} portion(s))\n`);
+  console.error(`(portions: read Health's Food table via ${dbUrl(argv)}, matched ${hits})\n`);
 }
 
 // ── demand, from the real meal rows ─────────────────────────────────────────
+// WHERE THE ROWS COME FROM DECIDES WHAT GETS GENERATED, so it is stated in the
+// output rather than assumed. With `--db`/`--dump` it is every row every user
+// has logged; without one it falls back to the 37-row test fixture, which is a
+// snapshot taken to pin a test's pass criterion and is nobody's live data.
 const demand = new Map();
+const mealDemand = new Map();
+let demandSource = 'test fixture (37 rows)';
 if (has('--demand')) {
-  const rows = JSON.parse(readFileSync(join(ROOT, 'test/fixtures/real-meal-names.json'), 'utf8'));
+  let rows;
+  if (isLive(argv)) {
+    const url = dbUrl(argv);
+    rows = query(url, MEALS_SQL);
+    demandSource = `${url} — ${rows.length} rows, every user`;
+  } else {
+    rows = JSON.parse(readFileSync(join(ROOT, 'test/fixtures/real-meal-names.json'), 'utf8'));
+  }
   for (const name of rows) {
     for (const f of resolveMealFragments(idx, name)) {
       if (f.dish) demand.set(f.dish.slug, (demand.get(f.dish.slug) ?? 0) + 1);
     }
+    // A MEAL's demand is the whole string repeating, never its fragments — the
+    // same rule src/meals.ts is built on. `loggedTimes` in the index was
+    // counted when the entry was written; live rows are allowed to overrule it
+    // so a plate that has become popular since rises in the queue.
+    const hit = resolveMealEntry(idx, name);
+    if (hit) mealDemand.set(hit.meal.slug, (mealDemand.get(hit.meal.slug) ?? 0) + 1);
   }
 }
+// STRICT when the rows are live: a meal absent from the table has demand 0
+// today, whatever `loggedTimes` recorded when the entry was written. Mixing a
+// live count with a stale one in a single ordering is how a plate nobody eats
+// any more stays at the top of the queue.
+const loggedTimes = (m) =>
+  (has('--demand') && isLive(argv) ? mealDemand.get(m.slug) ?? 0 : m.loggedTimes ?? 0);
 
 // ── the two queues ──────────────────────────────────────────────────────────
 const allDishes = idx.raw.dishes;
@@ -96,7 +122,8 @@ if (has('--demand')) {
   // A meal carries its own demand — `loggedTimes`, the number of times that
   // exact string appears in the real rows. It is not derived from fragments,
   // because a meal is only worth photographing when the WHOLE string repeats.
-  missingMeals.sort((a, b) => (b.loggedTimes ?? 0) - (a.loggedTimes ?? 0) || a.slug.localeCompare(b.slug));
+  missingMeals.sort((a, b) => loggedTimes(b) - loggedTimes(a) || a.slug.localeCompare(b.slug));
+  console.error(`(--demand: ordered by ${demandSource})\n`);
 }
 const limit = Number(val('--limit', 0));
 if (limit > 0) {
@@ -148,7 +175,7 @@ if (missingMeals.length) {
   console.log(`\n\n══ MEALS ══ (${missingMeals.length}) — a composed plate, several components\n`);
   for (const m of missingMeals) {
     const tags = [
-      m.loggedTimes ? `logged ${m.loggedTimes}×` : null,
+      loggedTimes(m) ? `logged ${loggedTimes(m)}×` : null,
       `${m.dishes.length} known dish${m.dishes.length === 1 ? '' : 'es'}`,
     ].filter(Boolean);
     console.log(`\n  ${m.slug}   [${tags.join(' · ')}]`);

@@ -1,13 +1,41 @@
 {
   "version": 1,
-  "generatedAt": "2026-08-25",
+  "generatedAt": "2026-08-26",
   "baseUrl": "/i",
   "sizes": [
     "160x120",
     "400x300",
     "800x600",
-    "1200x900"
+    "1200x900",
+    "120x120",
+    "300x300",
+    "600x600",
+    "900x900",
+    "160x90",
+    "400x225",
+    "800x450",
+    "1200x675"
   ],
+  "aspects": {
+    "4:3": [
+      "160x120",
+      "400x300",
+      "800x600",
+      "1200x900"
+    ],
+    "1:1": [
+      "120x120",
+      "300x300",
+      "600x600",
+      "900x900"
+    ],
+    "16:9": [
+      "160x90",
+      "400x225",
+      "800x450",
+      "1200x675"
+    ]
+  },
   "formats": [
     "webp",
     "jpg"
@@ -24,8 +52,30 @@
         "whey protein shake",
         "whey shake"
       ],
-      "variants": 0,
-      "fromHealthFoodTable": true
+      "variants": 2,
+      "fromHealthFoodTable": true,
+      "variantMeta": [
+        {
+          "v": 1,
+          "styleVersion": "v1",
+          "sizes": [
+            "1200x900",
+            "160x120",
+            "400x300",
+            "800x600"
+          ]
+        },
+        {
+          "v": 2,
+          "styleVersion": "v1",
+          "sizes": [
+            "1200x900",
+            "160x120",
+            "400x300",
+            "800x600"
+          ]
+        }
+      ]
     },
     {
       "slug": "boiled-eggs",
@@ -37,8 +87,20 @@
         "eggs boiled",
         "uble ande"
       ],
-      "variants": 0,
-      "fromHealthFoodTable": true
+      "variants": 1,
+      "fromHealthFoodTable": true,
+      "variantMeta": [
+        {
+          "v": 1,
+          "styleVersion": "v1",
+          "sizes": [
+            "1200x900",
+            "160x120",
+            "400x300",
+            "800x600"
+          ]
+        }
+      ]
     },
     {
       "slug": "egg-bhurji",
@@ -49,8 +111,30 @@
         "egg bhurji",
         "egg burji"
       ],
-      "variants": 0,
-      "fromHealthFoodTable": true
+      "variants": 2,
+      "fromHealthFoodTable": true,
+      "variantMeta": [
+        {
+          "v": 1,
+          "styleVersion": "v1",
+          "sizes": [
+            "1200x900",
+            "160x120",
+            "400x300",
+            "800x600"
+          ]
+        },
+        {
+          "v": 2,
+          "styleVersion": "v1",
+          "sizes": [
+            "1200x900",
+            "160x120",
+            "400x300",
+            "800x600"
+          ]
+        }
+      ]
     },
     {
       "slug": "paneer-bhurji",
@@ -60,8 +144,28 @@
         "paneer bhurji",
         "paneer burji"
       ],
-      "variants": 0,
-      "fromHealthFoodTable": true
+      "variants": 1,
+      "fromHealthFoodTable": true,
+      "variantMeta": [
+        {
+          "v": 1,
+          "styleVersion": "v1",
+          "sizes": [
+            "1200x675",
+            "1200x900",
+            "120x120",
+            "160x120",
+            "160x90",
+            "300x300",
+            "400x225",
+            "400x300",
+            "600x600",
+            "800x450",
+            "800x600",
+            "900x900"
+          ]
+        }
+      ]
     },
     {
       "slug": "greek-yogurt",
@@ -72,8 +176,20 @@
         "greek yogurt",
         "hung curd"
       ],
-      "variants": 0,
-      "fromHealthFoodTable": true
+      "variants": 1,
+      "fromHealthFoodTable": true,
+      "variantMeta": [
+        {
+          "v": 1,
+          "styleVersion": "v1",
+          "sizes": [
+            "1200x900",
+            "160x120",
+            "400x300",
+            "800x600"
+          ]
+        }
+      ]
     },
     {
       "slug": "dal",
@@ -89,8 +205,28 @@
         "tadka dal",
         "toor dal"
       ],
-      "variants": 0,
-      "fromHealthFoodTable": true
+      "variants": 1,
+      "fromHealthFoodTable": true,
+      "variantMeta": [
+        {
+          "v": 1,
+          "styleVersion": "v1",
+          "sizes": [
+            "1200x675",
+            "1200x900",
+            "120x120",
+            "160x120",
+            "160x90",
+            "300x300",
+            "400x225",
+            "400x300",
+            "600x600",
+            "800x450",
+            "800x600",
+            "900x900"
+          ]
+        }
+      ]
     },
     {
       "slug": "rajma",
@@ -101,8 +237,28 @@
         "rajma",
         "rajma curry"
       ],
-      "variants": 0,
-      "fromHealthFoodTable": true
+      "variants": 1,
+      "fromHealthFoodTable": true,
+      "variantMeta": [
+        {
+          "v": 1,
+          "styleVersion": "v1",
+          "sizes": [
+            "1200x675",
+            "1200x900",
+            "120x120",
+            "160x120",
+            "160x90",
+            "300x300",
+            "400x225",
+            "400x300",
+            "600x600",
+            "800x450",
+            "800x600",
+            "900x900"
+          ]
+        }
+      ]
     },
     {
       "slug": "chana",
@@ -115,8 +271,28 @@
         "chole",
         "kabuli chana"
       ],
-      "variants": 0,
-      "fromHealthFoodTable": true
+      "variants": 1,
+      "fromHealthFoodTable": true,
+      "variantMeta": [
+        {
+          "v": 1,
+          "styleVersion": "v1",
+          "sizes": [
+            "1200x675",
+            "1200x900",
+            "120x120",
+            "160x120",
+            "160x90",
+            "300x300",
+            "400x225",
+            "400x300",
+            "600x600",
+            "800x450",
+            "800x600",
+            "900x900"
+          ]
+        }
+      ]
     },
     {
       "slug": "roti",
@@ -129,11 +305,21 @@
         "roti",
         "rotis"
       ],
-      "variants": 1,
+      "variants": 2,
       "fromHealthFoodTable": true,
       "variantMeta": [
         {
           "v": 1,
+          "styleVersion": "v1",
+          "sizes": [
+            "1200x900",
+            "160x120",
+            "400x300",
+            "800x600"
+          ]
+        },
+        {
+          "v": 2,
           "styleVersion": "v1",
           "sizes": [
             "1200x900",
@@ -156,8 +342,20 @@
         "rice",
         "steamed rice"
       ],
-      "variants": 0,
-      "fromHealthFoodTable": true
+      "variants": 1,
+      "fromHealthFoodTable": true,
+      "variantMeta": [
+        {
+          "v": 1,
+          "styleVersion": "v1",
+          "sizes": [
+            "1200x900",
+            "160x120",
+            "400x300",
+            "800x600"
+          ]
+        }
+      ]
     },
     {
       "slug": "sprouts-salad",
@@ -169,8 +367,20 @@
         "sprouts",
         "sprouts salad"
       ],
-      "variants": 0,
-      "fromHealthFoodTable": true
+      "variants": 1,
+      "fromHealthFoodTable": true,
+      "variantMeta": [
+        {
+          "v": 1,
+          "styleVersion": "v1",
+          "sizes": [
+            "1200x900",
+            "160x120",
+            "400x300",
+            "800x600"
+          ]
+        }
+      ]
     },
     {
       "slug": "mixed-vegetable-sabzi",
@@ -185,8 +395,28 @@
         "sabzi",
         "veg sabzi"
       ],
-      "variants": 0,
-      "fromHealthFoodTable": true
+      "variants": 1,
+      "fromHealthFoodTable": true,
+      "variantMeta": [
+        {
+          "v": 1,
+          "styleVersion": "v1",
+          "sizes": [
+            "1200x675",
+            "1200x900",
+            "120x120",
+            "160x120",
+            "160x90",
+            "300x300",
+            "400x225",
+            "400x300",
+            "600x600",
+            "800x450",
+            "800x600",
+            "900x900"
+          ]
+        }
+      ]
     },
     {
       "slug": "almonds",
@@ -197,8 +427,20 @@
         "almonds",
         "badam"
       ],
-      "variants": 0,
-      "fromHealthFoodTable": true
+      "variants": 1,
+      "fromHealthFoodTable": true,
+      "variantMeta": [
+        {
+          "v": 1,
+          "styleVersion": "v1",
+          "sizes": [
+            "1200x900",
+            "160x120",
+            "400x300",
+            "800x600"
+          ]
+        }
+      ]
     },
     {
       "slug": "oats",
@@ -211,8 +453,20 @@
         "oats with milk",
         "porridge"
       ],
-      "variants": 0,
-      "fromHealthFoodTable": true
+      "variants": 1,
+      "fromHealthFoodTable": true,
+      "variantMeta": [
+        {
+          "v": 1,
+          "styleVersion": "v1",
+          "sizes": [
+            "1200x900",
+            "160x120",
+            "400x300",
+            "800x600"
+          ]
+        }
+      ]
     },
     {
       "slug": "paneer",
@@ -223,7 +477,27 @@
         "paneer",
         "paneer cubes"
       ],
-      "variants": 0
+      "variants": 1,
+      "variantMeta": [
+        {
+          "v": 1,
+          "styleVersion": "v1",
+          "sizes": [
+            "1200x675",
+            "1200x900",
+            "120x120",
+            "160x120",
+            "160x90",
+            "300x300",
+            "400x225",
+            "400x300",
+            "600x600",
+            "800x450",
+            "800x600",
+            "900x900"
+          ]
+        }
+      ]
     },
     {
       "slug": "banana",
@@ -234,7 +508,19 @@
         "bananas",
         "kela"
       ],
-      "variants": 0
+      "variants": 1,
+      "variantMeta": [
+        {
+          "v": 1,
+          "styleVersion": "v1",
+          "sizes": [
+            "1200x900",
+            "160x120",
+            "400x300",
+            "800x600"
+          ]
+        }
+      ]
     },
     {
       "slug": "besan-chilla",
@@ -247,7 +533,27 @@
         "cheela",
         "chilla"
       ],
-      "variants": 0
+      "variants": 1,
+      "variantMeta": [
+        {
+          "v": 1,
+          "styleVersion": "v1",
+          "sizes": [
+            "1200x675",
+            "1200x900",
+            "120x120",
+            "160x120",
+            "160x90",
+            "300x300",
+            "400x225",
+            "400x300",
+            "600x600",
+            "800x450",
+            "800x600",
+            "900x900"
+          ]
+        }
+      ]
     },
     {
       "slug": "poha",
@@ -257,7 +563,27 @@
         "poha",
         "pohe"
       ],
-      "variants": 0
+      "variants": 1,
+      "variantMeta": [
+        {
+          "v": 1,
+          "styleVersion": "v1",
+          "sizes": [
+            "1200x675",
+            "1200x900",
+            "120x120",
+            "160x120",
+            "160x90",
+            "300x300",
+            "400x225",
+            "400x300",
+            "600x600",
+            "800x450",
+            "800x600",
+            "900x900"
+          ]
+        }
+      ]
     },
     {
       "slug": "apple",
@@ -268,7 +594,19 @@
         "apples",
         "seb"
       ],
-      "variants": 0
+      "variants": 1,
+      "variantMeta": [
+        {
+          "v": 1,
+          "styleVersion": "v1",
+          "sizes": [
+            "1200x900",
+            "160x120",
+            "400x300",
+            "800x600"
+          ]
+        }
+      ]
     },
     {
       "slug": "curd",
@@ -281,7 +619,19 @@
         "yoghurt",
         "yogurt"
       ],
-      "variants": 0
+      "variants": 1,
+      "variantMeta": [
+        {
+          "v": 1,
+          "styleVersion": "v1",
+          "sizes": [
+            "1200x900",
+            "160x120",
+            "400x300",
+            "800x600"
+          ]
+        }
+      ]
     },
     {
       "slug": "tea",
@@ -293,7 +643,27 @@
         "milk tea",
         "tea"
       ],
-      "variants": 0
+      "variants": 1,
+      "variantMeta": [
+        {
+          "v": 1,
+          "styleVersion": "v1",
+          "sizes": [
+            "1200x675",
+            "1200x900",
+            "120x120",
+            "160x120",
+            "160x90",
+            "300x300",
+            "400x225",
+            "400x300",
+            "600x600",
+            "800x450",
+            "800x600",
+            "900x900"
+          ]
+        }
+      ]
     },
     {
       "slug": "walnuts",
@@ -304,7 +674,19 @@
         "walnut",
         "walnuts"
       ],
-      "variants": 0
+      "variants": 1,
+      "variantMeta": [
+        {
+          "v": 1,
+          "styleVersion": "v1",
+          "sizes": [
+            "1200x900",
+            "160x120",
+            "400x300",
+            "800x600"
+          ]
+        }
+      ]
     },
     {
       "slug": "aloo-palak",
@@ -315,7 +697,27 @@
         "alu palak",
         "potato spinach"
       ],
-      "variants": 0
+      "variants": 1,
+      "variantMeta": [
+        {
+          "v": 1,
+          "styleVersion": "v1",
+          "sizes": [
+            "1200x675",
+            "1200x900",
+            "120x120",
+            "160x120",
+            "160x90",
+            "300x300",
+            "400x225",
+            "400x300",
+            "600x600",
+            "800x450",
+            "800x600",
+            "900x900"
+          ]
+        }
+      ]
     },
     {
       "slug": "boondi-raita",
@@ -325,7 +727,27 @@
         "boondi raita",
         "bundi raita"
       ],
-      "variants": 0
+      "variants": 1,
+      "variantMeta": [
+        {
+          "v": 1,
+          "styleVersion": "v1",
+          "sizes": [
+            "1200x675",
+            "1200x900",
+            "120x120",
+            "160x120",
+            "160x90",
+            "300x300",
+            "400x225",
+            "400x300",
+            "600x600",
+            "800x450",
+            "800x600",
+            "900x900"
+          ]
+        }
+      ]
     },
     {
       "slug": "cucumber",
@@ -336,7 +758,19 @@
         "cucumber slices",
         "kheera"
       ],
-      "variants": 0
+      "variants": 1,
+      "variantMeta": [
+        {
+          "v": 1,
+          "styleVersion": "v1",
+          "sizes": [
+            "1200x900",
+            "160x120",
+            "400x300",
+            "800x600"
+          ]
+        }
+      ]
     }
   ],
   "meals": [
@@ -374,12 +808,32 @@
         "greek yogurt almonds",
         "hung curd almonds"
       ],
-      "variants": 0,
+      "variants": 1,
       "dishes": [
         "greek-yogurt",
         "almonds"
       ],
-      "loggedTimes": 3
+      "loggedTimes": 3,
+      "variantMeta": [
+        {
+          "v": 1,
+          "styleVersion": "v1",
+          "sizes": [
+            "1200x675",
+            "1200x900",
+            "120x120",
+            "160x120",
+            "160x90",
+            "300x300",
+            "400x225",
+            "400x300",
+            "600x600",
+            "800x450",
+            "800x600",
+            "900x900"
+          ]
+        }
+      ]
     },
     {
       "kind": "meal",
@@ -414,13 +868,33 @@
       "keys": [
         "dal roti sprouts salad"
       ],
-      "variants": 0,
+      "variants": 1,
       "dishes": [
         "dal",
         "roti",
         "sprouts-salad"
       ],
-      "loggedTimes": 2
+      "loggedTimes": 2,
+      "variantMeta": [
+        {
+          "v": 1,
+          "styleVersion": "v1",
+          "sizes": [
+            "1200x675",
+            "1200x900",
+            "120x120",
+            "160x120",
+            "160x90",
+            "300x300",
+            "400x225",
+            "400x300",
+            "600x600",
+            "800x450",
+            "800x600",
+            "900x900"
+          ]
+        }
+      ]
     },
     {
       "kind": "meal",
@@ -431,7 +905,7 @@
         "dal roti mixed vegetable sabzi",
         "dal roti sabzi"
       ],
-      "variants": 1,
+      "variants": 2,
       "dishes": [
         "dal",
         "roti",
@@ -441,6 +915,16 @@
       "variantMeta": [
         {
           "v": 1,
+          "styleVersion": "v1",
+          "sizes": [
+            "1200x900",
+            "160x120",
+            "400x300",
+            "800x600"
+          ]
+        },
+        {
+          "v": 2,
           "styleVersion": "v1",
           "sizes": [
             "1200x900",
@@ -488,7 +972,7 @@
         "egg bhurji roti",
         "egg bhurji roti salad"
       ],
-      "variants": 1,
+      "variants": 2,
       "dishes": [
         "egg-bhurji",
         "roti"
@@ -507,6 +991,16 @@
             "400x300",
             "800x600"
           ]
+        },
+        {
+          "v": 2,
+          "styleVersion": "v1",
+          "sizes": [
+            "1200x900",
+            "160x120",
+            "400x300",
+            "800x600"
+          ]
         }
       ]
     },
@@ -517,7 +1011,7 @@
       "keys": [
         "paneer bhurji roti salad"
       ],
-      "variants": 0,
+      "variants": 1,
       "dishes": [
         "paneer-bhurji",
         "roti"
@@ -525,7 +1019,27 @@
       "unresolvedParts": [
         "salad"
       ],
-      "loggedTimes": 1
+      "loggedTimes": 1,
+      "variantMeta": [
+        {
+          "v": 1,
+          "styleVersion": "v1",
+          "sizes": [
+            "1200x675",
+            "1200x900",
+            "120x120",
+            "160x120",
+            "160x90",
+            "300x300",
+            "400x225",
+            "400x300",
+            "600x600",
+            "800x450",
+            "800x600",
+            "900x900"
+          ]
+        }
+      ]
     }
   ]
 }

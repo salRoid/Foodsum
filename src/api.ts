@@ -205,6 +205,65 @@ export function resolveMeal(
   };
 }
 
+
+/** Options for `foodImage` — the one-call surface. */
+export interface FoodImageOptions extends ImageUrlOptions {
+  /**
+   * Allow a PARTIAL answer: the first dish that resolved and has a picture,
+   * even when the rest of the name did not resolve. Default `false`.
+   *
+   * Left off by default on purpose. `"Palak paneer with roti"` with no palak
+   * paneer in the corpus resolves to exactly one image — the roti — and
+   * returning it means a photograph of bread answering a request for a curry.
+   * That is the single outcome this library exists to prevent, and it is much
+   * easier to hit through a one-image helper than through `resolveMeal`, where
+   * `misses` is right there next to `images`.
+   */
+  allowPartial?: boolean;
+}
+
+/**
+ * A food name in, ONE image URL out — or `null`.
+ *
+ * The whole library in one call, for the common case: a caller with a single
+ * slot to fill who does not want to reason about strips, tiers or misses.
+ *
+ *   foodImage(idx, 'Dal + 1 roti + mixed veg sabzi')            // 4:3, largest
+ *   foodImage(idx, 'Palak paneer', { size: '400x225' })         // any rung
+ *   foodImage(idx, 'Palak paneer', { aspect: '16:9' })          // or by shape
+ *   foodImage(idx, 'Dal', { seed: mealId })                     // a variant
+ *
+ * ── WHAT "BEST MATCH" MEANS HERE, AND WHAT IT REFUSES TO MEAN ──
+ * Best available, never nearest. In order: a photograph of the whole plate if
+ * the entire string names a meal we have shot; otherwise the first dish of the
+ * name, but ONLY when every part of the name resolved and has a picture;
+ * otherwise `null`. There is no similarity fallback and there must not be —
+ * nearest-neighbour has no "I don't know", so it converts a safe miss into a
+ * confident wrong dish. `"paneer bhurji"` and `"egg bhurji"` share a token and
+ * are different meals.
+ *
+ * `null` is the normal case, not an error. A miss, a dish still in the
+ * generation queue and a stale index all produce it, which is why there is no
+ * error path: render nothing — no element, no reserved box, no placeholder.
+ *
+ * `size` accepts any rung of any ladder (`400x300`, `300x300`, `400x225`, …);
+ * `aspect` picks a ladder and takes its largest rung. A rung the variant does
+ * not carry returns `null` rather than a URL to a file that is not there.
+ */
+export function foodImage(
+  idx: LoadedIndex,
+  name: string | undefined | null,
+  opts: FoodImageOptions = {},
+): string | null {
+  if (!name) return null;
+  const { allowPartial = false, ...urlOpts } = opts;
+  // maxImages 1 would under-report `withoutImages`: a later imageless dish
+  // would only sometimes be seen, and the strictness below depends on it.
+  const r = resolveMeal(idx, name, { ...urlOpts, maxImages: 8 });
+  if (!allowPartial && (!r.fullyResolved || r.withoutImages.length > 0)) return null;
+  return r.images[0]?.url ?? null;
+}
+
 export { loadIndex };
 export type { FoodsumIndex, LoadedIndex, FragmentResolution, Tier, MealTier };
 export {
@@ -216,5 +275,5 @@ export {
 export { imageUrlFor, pickVariant, hash32 } from './variant.ts';
 export { normalise } from './normalise.ts';
 export { segment, softSplit } from './segment.ts';
-export { SIZES, FORMATS, LARGEST } from './index-schema.ts';
-export type { Size, Format, IndexDish, IndexMeal } from './index-schema.ts';
+export { SIZES, FORMATS, LARGEST, ASPECTS, ASPECT_SIZES, ALL_SIZES } from './index-schema.ts';
+export type { Size, AnySize, Aspect, Format, IndexDish, IndexMeal } from './index-schema.ts';

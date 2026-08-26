@@ -12,6 +12,8 @@ import { normaliseAlias } from './normalise.ts';
 import { resolveMealFragments } from './resolve.ts';
 import {
   SIZES,
+  ALL_SIZES,
+  ASPECT_SIZES,
   FORMATS,
   loadIndex,
   type FoodsumIndex,
@@ -160,7 +162,16 @@ export function buildIndex(
     version: 1,
     generatedAt: new Date().toISOString().slice(0, 10),
     baseUrl,
-    sizes: [...SIZES],
+    // Every rung across every aspect, plus the per-aspect ladders. `sizes` has
+    // always meant "what this corpus can hold", and it still does — it simply
+    // holds more shapes now. A rung a variant does not have is still a 404,
+    // which is what `variantMeta` is for.
+    sizes: [...ALL_SIZES],
+    aspects: {
+      '4:3': [...ASPECT_SIZES['4:3']],
+      '1:1': [...ASPECT_SIZES['1:1']],
+      '16:9': [...ASPECT_SIZES['16:9']],
+    },
     formats: [...FORMATS],
     dishes: dishEntries,
     ...(mealEntries.length ? { meals: mealEntries } : {}),

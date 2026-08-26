@@ -253,7 +253,10 @@ could silently lie to a consumer.
 ## Generating the corpus
 
 ```bash
-npm run missing      # the queue: every dish with no image, + its exact prompt
+cd ../Health && ./foodsum-dump.sh && cd -   # a fresh snapshot of every user's rows
+npm run pull -- --dump   # refresh portions + demand from Health, report what is missing
+npm run missing -- --dump    # the queue: every dish with no image, + its exact prompt
+npm run export       # the same queue as DATA — JSON or CSV, one record per subject
 #   …generate, LOOK AT IT, save as inbox/<slug>.png…
 npm run ingest       # crop · resize · convert · strip · file · index
 npm run check        # every index entry true on disk, nothing unaccounted for
@@ -266,7 +269,9 @@ wrong-format file cannot reach the corpus. `AGENTS.md` is what Codex reads;
 
 | | |
 |---|---|
-| `npm run missing` | **Two queues** — dishes with no image and meals with no image — each entry with its prompt already assembled from the right `STYLE.md` prefix (a meal has its own; a meal shot with the dish prompt is one bowl of something). A meal entry also prints `must show:` its components. `--demand` orders dishes by real-log frequency and meals by `loggedTimes`; `--db` refreshes portions from Health's `Food` table; `--dishes`/`--meals` select one queue; `--prompts` prints prompts alone; `--limit N`. |
+| `npm run missing` | **Two queues** — dishes with no image and meals with no image — each entry with its prompt already assembled from the right `STYLE.md` prefix (a meal has its own; a meal shot with the dish prompt is one bowl of something). A meal entry also prints `must show:` its components. `--demand` orders dishes by real-log frequency and meals by how often the whole string was logged — from the live table with `--db`/`--dump`, otherwise from the 37-row test fixture, and it says which; `--db` refreshes portions from Health's `Food` table; `--dishes`/`--meals` select one queue; `--prompts` prints prompts alone; `--limit N`. |
+| `npm run export` | **The same brief, as data.** One JSON (or `--csv`) record per subject carrying `slug`, `name`, `portion`, `mustShow`, `existingVariants`, the exact `file` to save into `inbox/`, and the assembled `prompt` — plus STYLE.md's exclusions and what ingest will do to the image. For a script, a spreadsheet, or a batch handed to a model. `--all` includes subjects that already have an image (that is how you queue a SECOND variant); `--out`, `--demand`, `--limit`, `--dishes`/`--meals`, `--db`. |
+| `npm run pull` | **The one command that goes to Health.** Reads its curated `Food` table for portions and its `Meal` table for demand, then reports the growth queue: fragments no dish claims (candidates for `src/dishes.ts`), recorded refusals still occurring (leave them alone), and whole strings logged 2+ times composing 2+ known dishes (candidates for `src/meals.ts`). Dry by default; `--write` updates `corpus/portions.json`; `--dump [file]` reads a droplet snapshot (every user's rows) instead of a database; `--url` points at a tunnel or another deployment; `--fixture` also refreshes the test snapshot. |
 | `npm run ingest` | Per file: validates the filename against the catalogue, centre-crops to 4:3, writes every ladder rung the source supports **without upscaling** (400×300 mandatory), encodes WebP, steps quality down until each rung is under budget, strips all metadata, writes a `meta.json` sidecar carrying `styleVersion`, and rebuilds `index.json`. `--dry` writes nothing; `--keep` leaves the source in `inbox/`; `--budget-scale`. |
 | `npm run check` | The drift detector. Every index entry: file exists · exact dimensions · WebP · under budget · no EXIF/ICC/IPTC/XMP · has a sidecar. Every file on disk: accounted for, contiguous variant numbering, no orphans. `--style v1` also lists images not on that style version. |
 
@@ -283,6 +288,47 @@ with a legible error if it is not resolvable.
 **A slug cannot be created by a filename.** Ingest rejects an unknown one.
 Adding a dish is a code change with an alias table behind it, and the slug is
 permanent because it is the URL.
+
+**Neither `export` nor `pull` is a second source of truth.** Both are
+projections of the committed `corpus/index.json` and of `STYLE.md`, read
+through the same helpers `missing` and `ingest` use — so a prompt in the export
+and a prompt in the console report cannot differ, and neither can disagree with
+what a consumer loads. `pull` in particular **never edits the catalogue**: an
+alias is an exact string somebody would really type, and a script that mints
+aliases from whatever was logged is a matcher that has learned to guess.
+
+### Where "the server" is
+
+There is no line from a laptop to hosted Health's Postgres — it is loopback-only
+on the droplet by design (`Lumen/ARCHITECTURE.md` §5). There are two routes to
+production food data, and they answer different questions:
+
+```bash
+# THE ONE TO USE — a snapshot taken over ssh, psql running ON the droplet.
+cd Health && ./foodsum-dump.sh           # → Foodsum/data/health-dump.json
+cd ../Foodsum && npm run pull -- --dump  # or missing/export, same flag
+
+# The full mirror, when you want to RUN Health against production rows.
+cd Lumen && ./sync-db.sh sync Health     # mirror the droplet into health_db_local
+cd Foodsum && npm run pull -- --write    # then this reads the real rows
+```
+
+**Prefer the dump for anything that decides what gets generated.**
+`health_db_local` is one developer's mirror, refreshed whenever `sync-db.sh`
+last ran; the queue it produces is that person's eating habits. An image is
+generated once and served to **everyone**, so the ordering should come from
+every row every user has logged — which is what the dump carries. Every script
+that reads one prints where its numbers came from, and `npm run export` records
+it in the file as `demandSource`.
+
+A dump is real meal logs for real accounts: `data/` is gitignored, and nothing
+in it is ever committed or published. Nothing generated *from* it is personal —
+a slug, a portion and a prompt are not. See `data/README.md`.
+
+`scripts/lib/db.mjs` resolves the connection in one place for every script that
+needs one — `--url`, then `$FOODSUM_DB_URL`, then Health's own `.env`
+`DATABASE_URL`, then `health_db_local`. It used to be a string hardcoded in two
+scripts, which is two definitions of "the server" waiting to disagree.
 
 ### Provenance
 

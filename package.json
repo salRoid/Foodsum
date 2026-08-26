@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "Dish name in, dish picture out — or nothing. A static food-image corpus, an index, and a matcher that refuses to guess.",
+  "description": "Dish name in, dish picture out \u2014 or nothing. A static food-image corpus, an index, and a matcher that refuses to guess.",
   "exports": {
     ".": "./src/api.ts",
     "./index.json": "./corpus/index.json"
@@ -13,6 +13,9 @@
     "test": "node --experimental-strip-types --test test/*.test.ts",
     "report": "node --experimental-strip-types scripts/report-real-meals.mjs",
     "missing": "node --experimental-strip-types scripts/missing.mjs",
+    "export": "node --experimental-strip-types scripts/export.mjs",
+    "pull": "node --experimental-strip-types scripts/pull.mjs",
+    "add": "node --experimental-strip-types scripts/add.mjs",
     "ingest": "node --experimental-strip-types scripts/ingest.mjs",
     "check": "node --experimental-strip-types scripts/check.mjs"
   },

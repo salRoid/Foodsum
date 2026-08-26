@@ -13,6 +13,70 @@
 export const SIZES = ['160x120', '400x300', '800x600', '1200x900'] as const;
 export type Size = (typeof SIZES)[number];
 
+/**
+ * ── THE SHAPE A SLOT NEEDS ──
+ *
+ * One photograph, several crops. A consumer does not have one hole to fill:
+ * Health alone renders a dish in a wide half-width band, in a card hero, and
+ * in a round medallion, and a 4:3 picture is wrong in two of the three. So a
+ * variant carries the SAME image cropped to each aspect, and a caller asks for
+ * the shape it needs rather than for a pixel size it has to work out.
+ *
+ * THE URL SHAPE DOES NOT CHANGE, and that is what makes this additive: a rung
+ * is still `<base>/<slug>/<variant>/<size>.<format>`, and every size string in
+ * every ladder is globally unique, so the aspect is a lookup convenience over
+ * a namespace that was already flat and explicit. An index written before
+ * aspects existed still loads and still serves its 4:3 rungs.
+ *
+ * `4:3` is the default and is unchanged in every respect — it is what the
+ * existing images were ingested as and what `imageUrlFor` still returns when
+ * nobody asks for anything else.
+ */
+export const ASPECTS = ['4:3', '1:1', '16:9'] as const;
+export type Aspect = (typeof ASPECTS)[number];
+
+export const ASPECT_SIZES = {
+  '4:3': SIZES,
+  '1:1': ['120x120', '300x300', '600x600', '900x900'],
+  '16:9': ['160x90', '400x225', '800x450', '1200x675'],
+} as const satisfies Record<Aspect, readonly string[]>;
+
+/** Every rung in every ladder. Flat, and every string in it is unique. */
+export const ALL_SIZES = [
+  ...ASPECT_SIZES['4:3'],
+  ...ASPECT_SIZES['1:1'],
+  ...ASPECT_SIZES['16:9'],
+] as const;
+export type AnySize = (typeof ALL_SIZES)[number];
+
+/**
+ * The rung each aspect's cards actually render, and the one whose weight
+ * budget is spec rather than a tooling default. Only `4:3`'s is MANDATORY at
+ * ingest — see `scripts/ingest.mjs`. A narrow aspect contributes whatever
+ * rungs the source can supply and nothing more, so adding aspects cannot make
+ * a file that used to ingest start failing.
+ */
+export const ASPECT_CANONICAL = {
+  '4:3': '400x300',
+  '1:1': '300x300',
+  '16:9': '400x225',
+} as const satisfies Record<Aspect, AnySize>;
+
+/** The largest rung of each ladder — what `imageUrlFor` uses for an aspect. */
+export const ASPECT_LARGEST = {
+  '4:3': '1200x900',
+  '1:1': '900x900',
+  '16:9': '1200x675',
+} as const satisfies Record<Aspect, AnySize>;
+
+/** Which aspect a rung belongs to. Unambiguous — the strings do not collide. */
+export function aspectOf(size: string): Aspect | null {
+  for (const a of ASPECTS) {
+    if ((ASPECT_SIZES[a] as readonly string[]).includes(size)) return a;
+  }
+  return null;
+}
+
 export const FORMATS = ['webp', 'jpg'] as const;
 export type Format = (typeof FORMATS)[number];
 
@@ -83,7 +147,13 @@ export interface FoodsumIndex {
   generatedAt: string;
   /** Where images are served from. A consumer may override per call. */
   baseUrl: string;
-  sizes: readonly Size[];
+  /** Every rung the corpus can hold, across every aspect. */
+  sizes: readonly AnySize[];
+  /**
+   * The rungs of each aspect. OPTIONAL, so an index written before aspects
+   * existed still loads — a consumer on one simply never asks for a crop.
+   */
+  aspects?: Record<Aspect, readonly string[]>;
   formats: readonly Format[];
   dishes: IndexDish[];
   /**

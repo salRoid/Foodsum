@@ -33,7 +33,7 @@ import {
   ROOT, INBOX, IMAGES, INDEX_JSON, CANONICAL_SIZE,
 } from './lib/style.mjs';
 import { buildIndex } from '../src/build.ts';
-import { SIZES } from '../src/index-schema.ts';
+import { ASPECTS, ASPECT_SIZES, ASPECT_CANONICAL } from '../src/index-schema.ts';
 import { DISHES } from '../src/dishes.ts';
 import { MEALS } from '../src/meals.ts';
 
@@ -154,70 +154,106 @@ async function ingestOne(src, file) {
   const meta = await sharp(src).metadata();
   if (!meta.width || !meta.height) throw new Error('unreadable image — no dimensions');
 
-  // ── centre-crop to 4:3 ────────────────────────────────────────────────────
-  // STYLE.md's angle decision is what makes this safe: a 90° overhead flat-lay
-  // with the dish centred and filling ~75% of the frame crops predictably from
-  // square. A centre crop of a perspective shot would decapitate the plate.
-  const targetAR = CW / CH;
-  const srcAR = meta.width / meta.height;
-  const cropW = srcAR > targetAR ? Math.round(meta.height * targetAR) : meta.width;
-  const cropH = srcAR > targetAR ? meta.height : Math.round(meta.width / targetAR);
-
-  if (cropW < CW || cropH < CH) {
-    throw new Error(
-      `too small: ${meta.width}×${meta.height} centre-crops to ${cropW}×${cropH}, ` +
-        `below the canonical ${CANONICAL_SIZE}. Upscaling is refused — regenerate larger.`,
-    );
-  }
-
-  // Only rungs the crop can supply WITHOUT upscaling. Never invent pixels:
-  // an upscaled 1200×900 is a lie about the image's resolution and it is the
-  // rung a consumer gets by default when it asks for no size at all.
-  const rungs = SIZES.filter((s) => {
-    const [w, h] = s.split('x').map(Number);
-    return w <= cropW && h <= cropH;
-  });
-  if (!rungs.includes(CANONICAL_SIZE)) {
-    throw new Error(`cannot produce the canonical ${CANONICAL_SIZE} rung from ${cropW}×${cropH}`);
-  }
-
-  const base = sharp(src).extract({
-    left: Math.floor((meta.width - cropW) / 2),
-    top: Math.floor((meta.height - cropH) / 2),
-    width: cropW,
-    height: cropH,
-  });
-
-  // ── encode every rung, all in memory, before anything touches the corpus ──
+  // ── centre-crop, ONCE PER ASPECT ──────────────────────────────────────────
+  // One photograph, three crops. A consumer does not have one hole to fill:
+  // Health alone renders a dish in a wide half-width band, a card hero and a
+  // 16:9 panel, and a 4:3 picture is wrong in two of the three. `index-schema`
+  // has defined the three ladders and `imageUrlFor` has served them for a
+  // while; this is the producing half, which never existed — which is why every
+  // variant on disk carried 4:3 rungs while the index advertised twelve.
+  //
+  // STYLE.md's angle decision is what makes a centre crop safe at all: a 90°
+  // overhead flat-lay with the dish centred and filling ~75% of the frame crops
+  // predictably. A centre crop of a perspective shot would decapitate the plate.
+  //
+  // 4:3 IS STILL THE ONLY MANDATORY ONE. A narrow aspect contributes whatever
+  // rungs the source can supply and nothing more, so adding aspects cannot make
+  // a file that used to ingest start failing — the promise `index-schema.ts`
+  // already documents on ASPECT_CANONICAL, kept here rather than restated.
+  const crops = {};
   const encoded = [];
-  for (const size of rungs) {
-    const [w, h] = size.split('x').map(Number);
-    const budget = budgetFor(style, size, BUDGET_SCALE);
-    let hit = null;
-    for (const quality of QUALITY_STEPS) {
-      const buf = await base
-        .clone()
-        .resize(w, h, { fit: 'cover', position: 'centre' })
-        .toColourspace('srgb')
-        // sharp strips metadata unless `withMetadata()` is called. It is
-        // deliberately NOT called: STYLE.md requires no EXIF and no generator
-        // tags, and the corpus is intended for publication.
-        .webp({ quality, effort: 6 })
-        .toBuffer();
-      if (buf.length <= budget) { hit = { size, quality, buf, budget }; break; }
-      hit = { size, quality, buf, budget }; // keep the smallest attempt for the error
-    }
-    if (hit.buf.length > hit.budget) {
+  const dropped = [];
+
+  for (const aspect of ASPECTS) {
+    // The ratio is DERIVED from the ladder's own canonical rung, never written
+    // down a second time: a constant here could drift from ASPECT_SIZES and
+    // produce a "16:9" file that is not 16:9.
+    const [aw, ah] = ASPECT_CANONICAL[aspect].split('x').map(Number);
+    const targetAR = aw / ah;
+    const srcAR = meta.width / meta.height;
+    const cropW = srcAR > targetAR ? Math.round(meta.height * targetAR) : meta.width;
+    const cropH = srcAR > targetAR ? meta.height : Math.round(meta.width / targetAR);
+
+    if (aspect === '4:3' && (cropW < CW || cropH < CH)) {
       throw new Error(
-        `${size} will not fit its budget: ${(hit.buf.length / 1024).toFixed(1)}KB at ` +
-          `quality ${hit.quality} (lowest tried), budget ${(hit.budget / 1024).toFixed(1)}KB. ` +
-          (size === CANONICAL_SIZE
-            ? 'That budget is STYLE.md\'s. A busy, high-contrast or textured image is the usual ' +
-              'cause — STYLE.md asks for a seamless flat background for exactly this reason.'
-            : 'This rung\'s budget is a tooling default; --budget-scale loosens it.'),
+        `too small: ${meta.width}×${meta.height} centre-crops to ${cropW}×${cropH}, ` +
+          `below the canonical ${CANONICAL_SIZE}. Upscaling is refused — regenerate larger.`,
       );
     }
-    encoded.push(hit);
+
+    // Only rungs the crop can supply WITHOUT upscaling. Never invent pixels:
+    // an upscaled 1200×900 is a lie about the image's resolution, and it is the
+    // rung a consumer gets by default when it asks for no size at all.
+    const rungs = ASPECT_SIZES[aspect].filter((size) => {
+      const [w, h] = size.split('x').map(Number);
+      return w <= cropW && h <= cropH;
+    });
+
+    if (aspect === '4:3' && !rungs.includes(CANONICAL_SIZE)) {
+      throw new Error(`cannot produce the canonical ${CANONICAL_SIZE} rung from ${cropW}×${cropH}`);
+    }
+    if (rungs.length === 0) continue;
+
+    const base = sharp(src).extract({
+      left: Math.floor((meta.width - cropW) / 2),
+      top: Math.floor((meta.height - cropH) / 2),
+      width: cropW,
+      height: cropH,
+    });
+
+    // ── encode every rung, all in memory, before anything touches the corpus ──
+    for (const size of rungs) {
+      const [w, h] = size.split('x').map(Number);
+      const budget = budgetFor(style, size, BUDGET_SCALE);
+      let hit = null;
+      for (const quality of QUALITY_STEPS) {
+        const buf = await base
+          .clone()
+          .resize(w, h, { fit: 'cover', position: 'centre' })
+          .toColourspace('srgb')
+          // sharp strips metadata unless `withMetadata()` is called. It is
+          // deliberately NOT called: STYLE.md requires no EXIF and no generator
+          // tags, and the corpus is intended for publication.
+          .webp({ quality, effort: 6 })
+          .toBuffer();
+        if (buf.length <= budget) { hit = { size, aspect, quality, buf, budget }; break; }
+        hit = { size, aspect, quality, buf, budget }; // keep the smallest attempt for the error
+      }
+
+      if (hit.buf.length > hit.budget) {
+        // A 4:3 rung over budget is still FATAL — that ladder is the spec, and
+        // its canonical rung's budget is STYLE.md's own number. A narrow rung
+        // over budget is DROPPED and reported instead: making it fatal would
+        // break the "adding aspects cannot fail a file that used to ingest"
+        // promise, and a ladder is allowed to be short (no-upscale already
+        // shortens it) but never half-written.
+        if (aspect === '4:3') {
+          throw new Error(
+            `${size} will not fit its budget: ${(hit.buf.length / 1024).toFixed(1)}KB at ` +
+              `quality ${hit.quality} (lowest tried), budget ${(hit.budget / 1024).toFixed(1)}KB. ` +
+              (size === CANONICAL_SIZE
+                ? 'That budget is STYLE.md\'s. A busy, high-contrast or textured image is the usual ' +
+                  'cause — STYLE.md asks for a seamless flat background for exactly this reason.'
+                : 'This rung\'s budget is a tooling default; --budget-scale loosens it.'),
+          );
+        }
+        dropped.push(`${size} (${(hit.buf.length / 1024).toFixed(1)}KB over ${(hit.budget / 1024).toFixed(1)}KB)`);
+        continue;
+      }
+      encoded.push(hit);
+    }
+
+    crops[aspect] = `${cropW}x${cropH}`;
   }
 
   // ── verify what we are about to write, before writing it ─────────────────
@@ -250,8 +286,16 @@ async function ingestOne(src, file) {
           ingestedAt: new Date().toISOString().slice(0, 10),
           sourceFile: file,
           sourceSize: `${meta.width}x${meta.height}`,
-          crop: `${cropW}x${cropH}`,
+          // `crop` stays the 4:3 box so a sidecar written before aspects
+          // existed and one written now mean the same thing; `crops` carries
+          // the rest. Reusing the old key for a map would silently change what
+          // every existing meta.json claims.
+          crop: crops['4:3'],
+          crops,
           sizes: encoded.map((e) => e.size),
+          // Which rungs were skipped for weight, so a short narrow ladder is a
+          // recorded decision rather than a mystery at `npm run check` time.
+          ...(dropped.length ? { droppedForBudget: dropped } : {}),
           format: 'webp',
           bytes: Object.fromEntries(encoded.map((e) => [e.size, e.buf.length])),
           quality: Object.fromEntries(encoded.map((e) => [e.size, e.quality])),

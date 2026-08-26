@@ -20,6 +20,7 @@ import { loadIndex, type FoodsumIndex } from '../src/index-schema.ts';
 import { resolveMeal } from '../src/api.ts';
 import { resolveFragment, resolveMealEntry } from '../src/resolve.ts';
 import { MEALS } from '../src/meals.ts';
+import { readStyle, promptFor, mealPromptFor } from '../scripts/lib/style.mjs';
 import { DISHES } from '../src/dishes.ts';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
@@ -165,8 +166,17 @@ test('a meal key is invisible to FRAGMENT resolution, and vice versa', () => {
   assert.equal(resolveMealEntry(shipped, 'greek yogurt'), null);
 });
 
-test('the shipped (imageless) corpus behaves exactly as it did before meals', () => {
-  const r = resolveMeal(shipped, 'Dal + 1 roti + mixed veg sabzi');
+test('an imageless corpus behaves exactly as it did before meals', () => {
+  // The corpus SHIPPED empty; it no longer is. This test is about the CONTRACT
+  // (an imageless meal entry must not suppress the — also imageless — strip),
+  // so it runs against the real index with its images erased. Asserting on the
+  // live corpus would break the suite every time a generation run lands.
+  const emptied = loadIndex(JSON.parse(readFileSync(join(ROOT, 'corpus/index.json'), 'utf8')));
+  for (const e of [...emptied.raw.dishes, ...(emptied.raw.meals ?? [])]) {
+    e.variants = 0;
+    delete e.variantMeta;
+  }
+  const r = resolveMeal(emptied, 'Dal + 1 roti + mixed veg sabzi');
   assert.deepEqual(r.images, []);
   assert.equal(r.fullyResolved, true);
   assert.deepEqual(r.withoutImages, ['dal', 'roti', 'mixed-vegetable-sabzi']);
@@ -315,14 +325,38 @@ test('ingest accepts a meal slug as a filename, and still refuses an unknown one
   assert.ok(!slugs.has('dal-roti-and-something-invented'));
 });
 
-test('`npm run missing` lists both queues, with the MEAL prompt for meals', () => {
+test('`npm run missing` reports both queues, tracking the LIVE corpus', () => {
+  // The queue contents change every time a generation run lands, so the CLI
+  // half of this test derives its expectations from the committed index
+  // instead of hard-coding a corpus state that was true on one day.
+  const raw = JSON.parse(readFileSync(join(ROOT, 'corpus/index.json'), 'utf8'));
+  const missDishes = raw.dishes.filter((d: { variants: number }) => d.variants === 0).length;
+  const missMeals = (raw.meals ?? []).filter((m: { variants: number }) => m.variants === 0).length;
+
   const out = execFileSync('npm', ['run', '--silent', 'missing'], {
     cwd: ROOT, encoding: 'utf8',
   });
-  assert.match(out, /══ DISHES ══ \(25\)/);
-  assert.match(out, /══ MEALS ══ \(\d+\)/);
-  assert.match(out, /inbox\/dal-roti-sprouts-salad\.png/);
-  // The meal prompt, not the dish prompt.
-  assert.match(out, /one complete meal of Dal \+ 1 roti \+ sprouts salad/);
-  assert.match(out, /must show: dal · roti · sprouts-salad/);
+  assert.match(out, new RegExp(
+    `Dishes\\s+${raw.dishes.length} in the catalogue · \\d+ with an image · MISSING ${missDishes}`,
+  ));
+  assert.match(out, new RegExp(
+    `Meals\\s+${(raw.meals ?? []).length} in the catalogue · \\d+ with an image · MISSING ${missMeals}`,
+  ));
+  if (missDishes + missMeals === 0) {
+    assert.match(out, /Nothing to generate/);
+  }
+  if (missMeals > 0) {
+    // Any missing meal must get the MEAL prompt, never the dish prompt.
+    assert.match(out, /one complete meal of /);
+    assert.match(out, /must show: /);
+  }
+
+  // The meal-vs-dish prompt distinction itself — the point the CLI assertion
+  // used to carry — is proven directly against the style contract, so it stays
+  // covered even when the queue is empty.
+  const style = readStyle();
+  const mealPrompt = mealPromptFor(style, 'Dal + 1 roti + sprouts salad');
+  const dishPrompt = promptFor(style, 'Dal');
+  assert.match(mealPrompt, /one complete meal of Dal \+ 1 roti \+ sprouts salad/);
+  assert.doesNotMatch(dishPrompt, /one complete meal/);
 });

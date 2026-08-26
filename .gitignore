@@ -9,3 +9,13 @@ node_modules/
 # that are. Keep the folder (and its README) so the workflow is discoverable.
 inbox/*
 !inbox/README.md
+
+# Snapshots of Health's real data, taken by Health/foodsum-dump.sh. Real meal
+# logs for real accounts — they decide WHAT gets generated and are never
+# published. Keep the folder (and its README) so the workflow is discoverable.
+data/*
+!data/README.md
+
+# Local record of the last deploy.sh run — regenerated every deploy, not
+# meaningful to any other machine.
+.deploy-state.json

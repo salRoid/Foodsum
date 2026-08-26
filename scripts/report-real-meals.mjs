@@ -14,23 +14,20 @@
 //   npm run report -- --db            (live health_db_local, needs psql)
 
 import { readFileSync } from 'node:fs';
-import { execFileSync } from 'node:child_process';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { loadIndex } from '../src/index-schema.ts';
 import { resolveMealFragments, resolveMealEntry } from '../src/resolve.ts';
 import { REFUSED } from '../src/dishes.ts';
+import { dbUrl, query } from './lib/db.mjs';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 
 function meals() {
   if (process.argv.includes('--db')) {
-    const out = execFileSync('psql', [
-      'postgresql://salroid@localhost/health_db_local',
-      '-At', '-c', 'SELECT name FROM "Meal" ORDER BY "date", "slot";',
-    ]).toString();
-    return out.split('\n').filter((l) => l.trim());
+    // One definition of where the data lives — see scripts/lib/db.mjs.
+    return query(dbUrl(), 'SELECT name FROM "Meal" ORDER BY "date", "slot";');
   }
   return JSON.parse(readFileSync(join(ROOT, 'test/fixtures/real-meal-names.json'), 'utf8'));
 }

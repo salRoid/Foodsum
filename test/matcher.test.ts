@@ -109,10 +109,20 @@ test('the refusals stay refused', () => {
 });
 
 // ── an empty corpus is a valid corpus ────────────────────────────────────
+// The corpus SHIPPED empty; it no longer is. These tests are about the
+// CONTRACT (no image → render nothing), so they run against the real index
+// with its images erased — asserting on the live corpus would mean the suite
+// breaks every time a generation run lands, which it now regularly does.
+
+const bare = loadIndex(JSON.parse(readFileSync(join(ROOT, 'corpus/index.json'), 'utf8')));
+for (const e of [...bare.raw.dishes, ...(bare.raw.meals ?? [])]) {
+  e.variants = 0;
+  delete e.variantMeta;
+}
+const emptied = bare;
 
 test('a dish with no images resolves but yields NO image', () => {
-  // This is the state the library ships in: 25 dishes, 0 image files.
-  const r = resolveMeal(idx, 'Dal + 1 roti + mixed veg sabzi');
+  const r = resolveMeal(emptied, 'Dal + 1 roti + mixed veg sabzi');
   assert.equal(r.fragments.length, 3);
   assert.equal(r.fullyResolved, true);
   assert.deepEqual(r.images, []);           // → the consumer renders nothing
@@ -120,8 +130,8 @@ test('a dish with no images resolves but yields NO image', () => {
 });
 
 test('a miss and an empty corpus produce the same output: nothing', () => {
-  assert.deepEqual(resolveMeal(idx, 'pav bhaji').images, []);
-  assert.deepEqual(resolveMeal(idx, 'Dal').images, []);
+  assert.deepEqual(resolveMeal(emptied, 'pav bhaji').images, []);
+  assert.deepEqual(resolveMeal(emptied, 'Dal').images, []);
 });
 
 // ── determinism ──────────────────────────────────────────────────────────
