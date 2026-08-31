@@ -1282,7 +1282,27 @@
         "litti chokha",
         "litti with chokha"
       ],
-      "variants": 0
+      "variants": 1,
+      "variantMeta": [
+        {
+          "v": 1,
+          "styleVersion": "v1",
+          "sizes": [
+            "1200x675",
+            "1200x900",
+            "120x120",
+            "160x120",
+            "160x90",
+            "300x300",
+            "400x225",
+            "400x300",
+            "600x600",
+            "800x450",
+            "800x600",
+            "900x900"
+          ]
+        }
+      ]
     },
     {
       "slug": "aloo-sandwich",
