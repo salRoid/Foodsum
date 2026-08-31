@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Photograph components, compose plates</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700&family=Figtree:wght@400;500;600&family=Lora:ital,wght@0,500;0,600;1,500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#EFF1F0;--panel:#FFFFFF;--panel-2:#F6F8F7;--ink:#161A19;--muted:#5C6663;--faint:#8A938F;--border:#DCE1DF;--ap:#127A63;--ap-soft:#E2EFEA;--warn:#A2652B;--warn-soft:#F5EBDF;--danger:#9E3B36;--danger-soft:#F6E7E5;--code-bg:#EAEEEC}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#101413;--panel:#171C1A;--panel-2:#1E2422;--ink:#E7ECEA;--muted:#9BA6A1;--faint:#6E7873;--border:#2A322F;--ap:#3FA98D;--ap-soft:#1A2C27;--warn:#D19A5B;--warn-soft:#2C2318;--danger:#D97A72;--danger-soft:#2E1D1B;--code-bg:#232A27}}
+:root[data-theme="dark"]{--bg:#101413;--panel:#171C1A;--panel-2:#1E2422;--ink:#E7ECEA;--muted:#9BA6A1;--faint:#6E7873;--border:#2A322F;--ap:#3FA98D;--ap-soft:#1A2C27;--warn:#D19A5B;--warn-soft:#2C2318;--danger:#D97A72;--danger-soft:#2E1D1B;--code-bg:#232A27}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.65 Figtree,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+.wrap{max-width:880px;margin:0 auto;padding:56px 22px 96px}
+.eyebrow{font:600 12px/1 'Plus Jakarta Sans',sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--ap);margin:0 0 14px}
+h1{font:600 40px/1.16 Lora,Georgia,serif;letter-spacing:-.02em;margin:0 0 16px}
+.lede{font-size:19px;line-height:1.6;color:var(--muted);max-width:68ch;margin:0 0 10px}
+.meta{font-size:13px;color:var(--faint);margin:22px 0 0;padding-top:16px;border-top:1px solid var(--border)}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:16px;padding:28px 30px;margin:26px 0}
+.kicker{font:600 11px/1 'Plus Jakarta Sans',sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);margin:0 0 8px}
+h2{font:600 25px/1.25 'Plus Jakarta Sans',sans-serif;letter-spacing:-.01em;margin:0 0 14px}
+h3{font:600 17px/1.3 'Plus Jakarta Sans',sans-serif;margin:26px 0 8px}
+p,li{max-width:68ch}p{margin:0 0 14px}ul,ol{margin:0 0 14px;padding-left:22px}li{margin:0 0 7px}
+code{background:var(--code-bg);padding:1.5px 6px;border-radius:5px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.88em}
+.tscroll{overflow-x:auto;margin:16px 0;border:1px solid var(--border);border-radius:12px}
+table{border-collapse:collapse;width:100%;min-width:620px;font-size:14.5px}
+th,td{text-align:left;padding:11px 14px;border-bottom:1px solid var(--border);vertical-align:top}
+th{background:var(--panel-2);font:600 12px/1.3 'Plus Jakarta Sans',sans-serif;letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
+tr:last-child td{border-bottom:0}
+.verdict{background:var(--ap-soft);border-left:4px solid var(--ap);border-radius:0 12px 12px 0;padding:20px 24px;margin:20px 0}
+.verdict .kicker{color:var(--ap)}
+.caveat{background:var(--warn-soft);border-left:4px solid var(--warn);border-radius:0 12px 12px 0;padding:18px 22px;margin:20px 0}
+.caveat .kicker{color:var(--warn)}
+.qq{border:1px solid var(--border);border-left:4px solid var(--faint);border-radius:0 12px 12px 0;padding:16px 20px;margin:14px 0;background:var(--panel-2)}
+.q{font:600 16px/1.4 'Plus Jakarta Sans',sans-serif;margin:0 0 6px}
+.qa{font-size:14.5px;color:var(--muted);margin:0}
+.pill{display:inline-block;font:600 11px/1 'Plus Jakarta Sans',sans-serif;letter-spacing:.06em;text-transform:uppercase;padding:5px 9px;border-radius:99px;margin-right:6px}
+.keep{background:var(--ap-soft);color:var(--ap)}.kill{background:var(--danger-soft);color:var(--danger)}.new{background:var(--warn-soft);color:var(--warn)}
+figure{margin:22px 0}figcaption{font-size:13.5px;color:var(--muted);margin-top:10px;max-width:68ch}
+svg{width:100%;height:auto;display:block}
+.big{font:600 34px/1 Lora,serif;color:var(--ap)}
+.num{display:flex;gap:26px;flex-wrap:wrap;margin:6px 0 2px}
+.num div{min-width:120px}.num span{display:block;font-size:13px;color:var(--muted);margin-top:4px}
+</style></head><body><div class="wrap">
+
+<p class="eyebrow">Design exploration · Foodsum · 31 Aug 2026</p>
+<h1>Photograph components, compose plates</h1>
+<p class="lede">A plate is a combination, and combinations explode: the 24 plates in the catalogue draw on just <strong>31 distinct components</strong>, and those 31 can form <strong>36,425</strong> plates of two to four items. We are photographing the wrong noun. Generate one cutout per component, place them into katoris on a thali at ingest time, and any future combo is a composition instead of a generation run.</p>
+<p class="meta">Raised by Sal: <em>“where you could also place things on thali in case of meal… if you have chole in a katori you just need chole images and you can put it in thali, similarly rotis. It could help us generate more combos in future.”</em> · Nothing here has been built or run.</p>
+
+<div class="card">
+<p class="kicker">The question</p>
+<h2>Is a meal image a photograph, or a composition?</h2>
+<p>Today every meal image is its own generated photograph of a whole arranged plate. That is one generation, one review, one ingest per <em>combination</em>. The alternative is to treat a meal image as a <strong>layout problem</strong>: photograph each component once in its own vessel, and compose the plate at ingest time onto a thali.</p>
+<p>The decision is not “does compositing work” — <code>sharp</code> is already a dependency and does it. The decision is whether a composed plate is <em>good enough to show a person as a picture of their dinner</em>, and what has to change in the corpus for it to be possible at all.</p>
+</div>
+
+<div class="card">
+<p class="kicker">Findings · measured today</p>
+<h2>Where this stands</h2>
+
+<div class="num">
+<div><span class="big">24</span><span>plates in the catalogue</span></div>
+<div><span class="big">8</span><span>photographed</span></div>
+<div><span class="big">16</span><span>outstanding</span></div>
+<div><span class="big">31</span><span>distinct components</span></div>
+<div><span class="big">36,425</span><span>plates those 31 could form</span></div>
+</div>
+
+<h3>1. The current corpus physically cannot be composited</h3>
+<p><code>STYLE.md</code>’s fixed prefix specifies a “<em>seamless flat light warm-grey background</em>” with “<em>a soft contact shadow under the vessel</em>”, encoded as opaque WebP (<code>scripts/ingest.mjs:227</code>). Pasting one of those onto a thali pastes a grey rectangle with its own shadow. <strong>Composition needs a new image class with an alpha channel and no baked shadow</strong> — this is the real cost of the idea, not the code.</p>
+
+<h3>2. Plates are small, which is what makes layout tractable</h3>
+<p>Of the 24 plates: <strong>14 have two components, 9 have three, 1 has four.</strong> A layout table covering 2–4 slots covers everything in the ledger, and a thali with more than five katoris is not a thali anybody plates at home.</p>
+
+<h3>3. The components are mostly the same handful of things</h3>
+<p>Ten of the catalogue’s grain dishes (<code>roti</code>, <code>cooked-rice</code>, <code>naan</code>, <code>idli</code>, <code>bhature</code>, <code>masala-dosa</code>…) and fourteen legume/vegetable dishes (<code>dal</code>, <code>rajma</code>, <code>chana</code>, <code>aloo-sabzi</code>, <code>sambar</code>…) account for nearly every plate. <strong>Roti and rice alone appear in more than half of them.</strong></p>
+
+<h3>4. Nothing in the model knows what vessel a dish comes in</h3>
+<p><code>Dish</code> (<code>src/dishes.ts</code>) carries <code>slug</code>, <code>name</code>, <code>category</code>, <code>aliases</code>, <code>fromHealthFoodTable</code>, <code>note</code> — and no notion of <em>katori vs flatbread vs mound</em>. <code>category</code> is close but wrong for this: <code>grain</code> holds both <code>roti</code> (flat, goes on the rim) and <code>cooked-rice</code> (a mound or a katori).</p>
+
+<h3>5. The output contract is a real raster, and must stay one</h3>
+<p>Each variant ships <strong>12 rungs across three aspect ladders</strong> (4:3, 1:1, 16:9). Beacon renders images to <strong>1-bit e-paper frames</strong> — 200×200 and 240×360 (<code>Beacon/apps/mid/src/lib/frames.ts:13</code>). Whatever we build has to end as an ordinary image file at an ordinary URL, or it works in Health and silently does nothing on the panel.</p>
+</div>
+
+<figure>
+<svg viewBox="0 0 760 210" role="img" aria-label="Photographing plates scales with combinations; photographing components scales with ingredients.">
+<defs><marker id="a" markerWidth="9" markerHeight="9" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="currentColor"/></marker></defs>
+<g font-family="Figtree,sans-serif" font-size="12.5">
+<text x="0" y="14" font-weight="600" font-size="13">Today — one photograph per combination</text>
+<g opacity=".85">
+<rect x="0" y="28" width="96" height="34" rx="8" fill="none" stroke="currentColor"/><text x="48" y="49" text-anchor="middle">dal+roti</text>
+<rect x="0" y="70" width="96" height="34" rx="8" fill="none" stroke="currentColor"/><text x="48" y="91" text-anchor="middle">dal+rice</text>
+<rect x="0" y="112" width="96" height="34" rx="8" fill="none" stroke="currentColor"/><text x="48" y="133" text-anchor="middle">chole+roti</text>
+<text x="48" y="166" text-anchor="middle" opacity=".7">…24 so far</text>
+</g>
+<line x1="104" y1="87" x2="150" y2="87" stroke="currentColor" marker-end="url(#a)"/><text x="127" y="79" text-anchor="middle" font-size="11" opacity=".75">generate</text>
+<rect x="158" y="60" width="112" height="54" rx="10" fill="none" stroke="currentColor" stroke-dasharray="4 3"/><text x="214" y="83" text-anchor="middle">24 images</text><text x="214" y="100" text-anchor="middle" font-size="11" opacity=".7">grows per combo</text>
+
+<text x="392" y="14" font-weight="600" font-size="13">Proposed — one cutout per component</text>
+<g opacity=".85">
+<rect x="392" y="28" width="80" height="34" rx="8" fill="none" stroke="currentColor"/><text x="432" y="49" text-anchor="middle">dal</text>
+<rect x="392" y="70" width="80" height="34" rx="8" fill="none" stroke="currentColor"/><text x="432" y="91" text-anchor="middle">roti</text>
+<rect x="392" y="112" width="80" height="34" rx="8" fill="none" stroke="currentColor"/><text x="432" y="133" text-anchor="middle">chole</text>
+<text x="432" y="166" text-anchor="middle" opacity=".7">…31 components</text>
+</g>
+<line x1="480" y1="87" x2="524" y2="87" stroke="currentColor" marker-end="url(#a)"/><text x="502" y="79" text-anchor="middle" font-size="11" opacity=".75">compose</text>
+<rect x="532" y="52" width="150" height="70" rx="10" fill="none" stroke="var(--ap)"/><text x="607" y="80" text-anchor="middle" fill="var(--ap)" font-weight="600">36,425 plates</text><text x="607" y="99" text-anchor="middle" font-size="11" fill="var(--ap)" opacity=".85">no new generation</text>
+</g></svg>
+<figcaption><strong>The whole argument in one picture.</strong> Generation cost tracks the left column, not the right. Every plate added to the ledger today is a new photograph; under composition it is a row in a layout table.</figcaption>
+</figure>
+
+<div class="card">
+<p class="kicker">Options</p>
+<h2>Four ways to get the 16 outstanding plates</h2>
+<div class="tscroll"><table>
+<tr><th>Option</th><th>What it does</th><th>Cost</th><th>Buys</th><th>Risk</th></tr>
+<tr><td><strong>A · Keep photographing</strong></td><td>Generate all 16 plates as whole-plate photographs, as today</td><td>16 generations + review now; one more per future combo</td><td>Nothing new to build. Photographs look like photographs</td><td>Unbounded. Every combo Sal eats is another queue item forever</td></tr>
+<tr><td><strong>B · Two corpora</strong></td><td>Keep solo dish photos; add a second <em>component cutout</em> per dish for composition</td><td>New style prefix, alpha pipeline, layout engine — plus a 2nd generation for every dish</td><td>Plates become free</td><td>Two images per dish to keep in step; they will drift in colour and portion</td></tr>
+<tr><td><strong>C · One corpus of components</strong> <span class="pill new">recommended</span></td><td>A dish’s canonical image <em>is</em> its cutout. The solo view composes it onto a plain ground; a plate composes several onto a thali</td><td>Same engine as B, but one generation per dish. Existing 26 photos grandfathered</td><td>Plates free, <em>and</em> every new dish is plate-ready the day it lands</td><td>A composed solo shot must look as good as a photographed one, or the dish view regresses</td></tr>
+<tr><td><strong>D · Client-side layering</strong></td><td>Stack component images with CSS/SVG in the browser</td><td>Small in Health</td><td>No new files at all</td><td><strong>Breaks Beacon.</strong> The panel needs a 1-bit raster from a URL; there is no browser on an e-paper display. Also breaks the one-URL contract every consumer uses</td></tr>
+</table></div>
+
+<div class="verdict">
+<p class="kicker">Recommendation</p>
+<p><strong>C, reached through B’s mechanics, and proven on one plate before anything is converted.</strong> Build the component class and the composer; generate cutouts only for the components the 16 outstanding plates need; compose those plates. Leave the 26 existing solo photographs exactly as they are — they work, and regenerating a working corpus to satisfy a symmetry is how quality gets lost.</p>
+<p>Then the convergence is free rather than a migration: <strong>new dishes ship as components</strong> and get their solo view composed, while grandfathered dishes keep their photograph. Two classes coexist permanently and that is fine — it is the same shape as NoteBook’s plain-vs-HTML page bodies, where a boundary function decides which a thing is and both are legal for ever.</p>
+<p><em>Runner-up: A.</em> If a composed thali turns out to look uncanny — and that is a real possibility that only Sal’s eye can rule on — then photographing 16 plates is a day of work and the idea is closed cleanly. <strong>Option D is rejected outright</strong>, not on effort but because it silently excludes the device this suite was partly built for.</p>
+</div>
+</div>
+
+<div class="card">
+<p class="kicker">Mechanism</p>
+<h2>What a thali layout actually is</h2>
+<p>Three pieces, none of them clever: a base image, a table of slots, and a rule for choosing which slot a dish may occupy.</p>
+
+<figure>
+<svg viewBox="0 0 760 240" role="img" aria-label="A thali base with typed slots; each dish is assigned to a slot by its vessel kind.">
+<defs><marker id="b" markerWidth="9" markerHeight="9" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="currentColor"/></marker></defs>
+<g font-family="Figtree,sans-serif" font-size="12">
+<circle cx="150" cy="120" r="104" fill="none" stroke="currentColor" opacity=".55"/>
+<text x="150" y="18" text-anchor="middle" font-weight="600" font-size="13">thali base + slot geometry</text>
+<circle cx="150" cy="66" r="30" fill="none" stroke="var(--ap)"/><text x="150" y="70" text-anchor="middle" fill="var(--ap)" font-size="11">katori 1</text>
+<circle cx="82" cy="150" r="30" fill="none" stroke="var(--ap)"/><text x="82" y="154" text-anchor="middle" fill="var(--ap)" font-size="11">katori 2</text>
+<circle cx="218" cy="150" r="30" fill="none" stroke="var(--ap)"/><text x="218" y="154" text-anchor="middle" fill="var(--ap)" font-size="11">katori 3</text>
+<ellipse cx="150" cy="196" rx="52" ry="20" fill="none" stroke="currentColor" opacity=".8"/><text x="150" y="200" text-anchor="middle" font-size="11">flat</text>
+
+<line x1="300" y1="120" x2="352" y2="120" stroke="currentColor" marker-end="url(#b)"/><text x="326" y="112" text-anchor="middle" font-size="11" opacity=".75">assign</text>
+
+<g opacity=".9">
+<rect x="366" y="40" width="180" height="30" rx="7" fill="none" stroke="currentColor"/><text x="376" y="60">chana <tspan opacity=".65">· vessel: katori</tspan></text>
+<rect x="366" y="80" width="180" height="30" rx="7" fill="none" stroke="currentColor"/><text x="376" y="100">dal <tspan opacity=".65">· vessel: katori</tspan></text>
+<rect x="366" y="120" width="180" height="30" rx="7" fill="none" stroke="currentColor"/><text x="376" y="140">roti <tspan opacity=".65">· vessel: flat</tspan></text>
+<rect x="366" y="160" width="180" height="30" rx="7" fill="none" stroke="currentColor" stroke-dasharray="4 3"/><text x="376" y="180" opacity=".6">sambar <tspan>· no cutout yet</tspan></text>
+</g>
+<line x1="556" y1="175" x2="600" y2="175" stroke="currentColor" opacity=".6" marker-end="url(#b)"/>
+<text x="608" y="171" font-size="11" opacity=".8">slot left</text><text x="608" y="186" font-size="11" opacity=".8">EMPTY, never</text><text x="608" y="201" font-size="11" opacity=".8">substituted</text>
+</g></svg>
+<figcaption><strong>A dish reaches a slot through its <code>vessel</code>, and a missing component leaves a hole.</strong> The layout never fills an empty katori with a similar-looking dish — that is the same refusal that makes the matcher trustworthy, applied to pixels.</figcaption>
+</figure>
+
+<h3>The <code>vessel</code> field</h3>
+<p>A new optional field on <code>Dish</code>, because <code>category</code> cannot answer this: <code>katori</code> (anything wet or loose — dal, chole, sabzi, raita, chutney), <code>flat</code> (roti, naan, dosa, bhature — laid on the rim), <code>mound</code> (rice, poha — a heap on the tray itself), <code>whole</code> (a thing that is its own plate — a sandwich, a shake, yogurt in its own bowl).</p>
+<p><strong>A <code>whole</code> dish disqualifies a plate from composition.</strong> A whey shake does not go on a thali, and <code>whey-banana-shake</code> should stay a photograph. That is a feature: the vessel field is also how a plate opts <em>out</em>.</p>
+
+<h3>Choosing a layout</h3>
+<p>Keyed by <code>(count of katori items, has flat, has mound)</code>. With 14 two-item and 9 three-item plates, the whole table is perhaps six entries. Slots fill in the meal’s declared component order, so composition is deterministic — the same plate composes identically every time, which is what lets the result be cached and content-hashed like any other variant.</p>
+</div>
+
+<div class="card">
+<p class="kicker">The plan</p>
+<h2>Five steps, cheapest and most decisive first</h2>
+<ol>
+<li><strong>Prove it looks right, before building anything.</strong> Add a component prefix to <code>STYLE.md</code> (one katori, transparent background, no shadow, fixed vessel diameter, 90° overhead, filling the frame). Generate three cutouts — <code>chana</code>, <code>roti</code>, <code>gulab-jamun</code> — and hand-composite one <code>chole-bhature</code> thali. <em>Done when Sal looks at it and says yes or no.</em> Everything below is wasted if this step fails, which is why it is first and why it involves no code.</li>
+<li><strong>The thali base and slot table.</strong> One base asset plus a small layout table. <em>Done when a JSON layout renders empty slots at the right positions.</em></li>
+<li><strong><code>vessel</code> on <code>Dish</code>, and a plate’s composability derived from it.</strong> Additive and backwards-compatible; absent means <code>whole</code>, so nothing changes until a dish opts in. <em>Done when <code>npm run brief</code> reports which plates are composable and which need a photograph.</em></li>
+<li><strong><code>composeMeal()</code> in the ingest pipeline.</strong> Writes into <code>corpus/images/&lt;meal-slug&gt;/</code> exactly like an ingested photograph, through the same 12-rung ladder and the same budget check — <strong>so nothing downstream learns a new URL shape</strong>, and Beacon gets a real raster. <em>Done when a composed plate passes <code>npm run check</code> unmodified.</em></li>
+<li><strong>Backfill.</strong> Generate cutouts for the components the 16 outstanding plates need, compose them, review as a contact sheet. <em>Done when <code>npm run missing</code> reports zero plates.</em></li>
+</ol>
+<p>Steps 1–3 are independently useful even if step 4 is never built: the <code>vessel</code> field improves prompts on its own, since a prompt that names the vessel produces a more consistent photograph.</p>
+</div>
+
+<div class="card">
+<p class="kicker">Deliberately out of scope</p>
+<h2>Doors left shut, and why</h2>
+<ul>
+<li><span class="pill kill">no</span><strong>Regenerating the 26 existing dish photographs as cutouts.</strong> They work. A symmetry that costs a working corpus is not worth having.</li>
+<li><span class="pill kill">no</span><strong>Perspective or 3D plating.</strong> Everything in this corpus is 90° overhead precisely so that scale and framing are comparable. A tilted thali reintroduces every problem flat-lay was chosen to avoid.</li>
+<li><span class="pill kill">no</span><strong>Regional thali variants</strong> (banana leaf, steel compartment tray). One tray until there is a reason for two.</li>
+<li><span class="pill kill">no</span><strong>Composition at request time.</strong> Composed variants are ingested and committed like any other image, so the CDN, the tag-based publish flow and Beacon’s poll all work unchanged.</li>
+<li><span class="pill keep">keep</span><strong>Photographed plates stay first in precedence.</strong> A real photograph of a real plate beats a composition; composition fills the gap, it does not replace the top tier.</li>
+</ul>
+</div>
+
+<div class="card">
+<p class="kicker">Open questions — Sal’s call</p>
+<h2>Four things I cannot decide from the code</h2>
+<div class="qq"><p class="q">Does a composed thali actually look like food?</p><p class="qa">This is the whole risk and no amount of design settles it. Separately generated components will differ slightly in scale, white balance and how full the vessel is; composited, that can read as a collage. <strong>Step 1 exists solely to answer this</strong>, and if the answer is no, we photograph 16 plates and close the idea.</p></div>
+<div class="qq"><p class="q">Where does the thali itself come from — generated, or drawn?</p><p class="qa">A generated photograph of an empty thali is realistic but fixes its own lighting and perspective for ever. A drawn/vector tray composites perfectly and may look flat next to photographic food. My instinct is a <em>generated</em> tray, because the food is photographic and the tray must match it — but I would rather see both once.</p></div>
+<div class="qq"><p class="q">Does a composed image survive 1-bit e-paper?</p><p class="qa">Beacon dithers to pure black and white at 200×200. Cutout edges and soft composited shadows are exactly what dithering handles worst. Checkable cheaply once one composition exists, and worth checking before the backfill rather than after.</p></div>
+<div class="qq"><p class="q">Should the solo dish view eventually compose too?</p><p class="qa">That is the difference between “plates get cheaper” and “<em>everything</em> gets cheaper”, and it is what makes every future dish plate-ready automatically. It only becomes safe once a composed solo shot has been compared side by side with a photographed one.</p></div>
+</div>
+
+<div class="caveat">
+<p class="kicker">Verification status</p>
+<p><strong>Nothing in this plan has been built or run.</strong> No cutout has been generated, no thali composed, no code written. What <em>was</em> executed today: the catalogue counts (24 plates, 8 with images, 16 without, 46 dishes, 31 distinct components), the combinatorial figure, the plate-size distribution, the aspect/rung ladders, the presence of <code>sharp</code> 0.34.5 with <code>composite()</code>, the absence of any vessel field on <code>Dish</code>, and Beacon’s 1-bit frame geometry — all read from the repo or computed from <code>corpus/index.json</code>.</p>
+<p>The claim I am least sure of is the one the whole idea rests on: <em>that separately generated components composite into something that reads as a meal.</em> I have not seen it done in this style and I would not bet the backfill on it. Hence step 1.</p>
+</div>
+
+<p class="meta">Foodsum · <code>ideas/thali-composition.html</code> · plan only, nothing implemented</p>
+</div></body></html>
