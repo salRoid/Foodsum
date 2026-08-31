@@ -73,39 +73,6 @@ Angle, vessel, background, light, contact shadow and every accuracy rule below
 are unchanged — a meal photo that looked like a different set would defeat the
 entire point of having one prefix.
 
-### Fixed prefix — component (v1)
-
-> Top-down 90° overhead photograph of {dish}, served in a single plain matte
-> white ceramic katori (small round bowl), the bowl centred and filling the
-> entire frame edge to edge. Pure flat white background, completely seamless.
-> Absolutely no shadow of any kind, no contact shadow, no cast shadow. Soft
-> perfectly even diffuse lighting with no directional falloff. Realistic
-> home-cooked portion, filled to just below the rim. Photographic, natural
-> colour, no styling flourishes.
-
-**A component is NOT a dish photograph.** It exists to be CUT OUT and placed
-into a katori-shaped slot on a thali, so three things are different and all
-three matter:
-
-- **No shadow, ever.** The thali supplies one shadow per slot, so a component
-  carrying its own arrives as a dark smear on the tray. This is the single most
-  common way a composed plate looks wrong.
-- **Filling the frame, not 75% of it.** The composer scales by the frame, so a
-  component shot at 75% is silently smaller than its neighbours in the same
-  thali — and inconsistent scale between katoris is the other way it looks wrong.
-- **Pure white, not warm-grey.** The background is discarded; warm-grey leaves a
-  halo when keyed out, and a halo survives Beacon's 1-bit dithering as a ring.
-
-For a `flat` component (roti, naan, dosa) replace the katori clause with: *laid
-flat and centred on a pure white background, filling the entire frame, no
-vessel.* For a `mound` component (rice) use: *heaped as a single mound, centred,
-filling the frame, no vessel.*
-
-**Hard exclusions — component.** Every dish exclusion applies, plus: no vessel
-other than the one katori; no second bowl; no tray, thali, plate or placemat
-under it; nothing cropped by the frame edge except deliberately, at the bowl's
-own rim.
-
 ### Fixed prefix — meal (v1)
 
 > Top-down 90° overhead photograph of one complete meal of {meal}, arranged
