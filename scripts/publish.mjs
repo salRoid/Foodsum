@@ -42,13 +42,25 @@ const ssh = (script, opts = {}) => run('ssh', ['-o', 'ServerAliveInterval=15', V
 const inbox = existsSync(INBOX) ? readdirSync(INBOX).filter((f) => /\.(png|jpe?g|webp)$/i.test(f)) : [];
 say(`① inbox/ holds ${inbox.length} image(s)${inbox.length ? ': ' + inbox.join(', ') : ''}`);
 if (inbox.length === 0) {
+  // "Nothing to publish" is NOT "the working tree is clean" — that was the first
+  // version and it was wrong in the commonest case of all: images generated,
+  // ingested and committed earlier in the day, with a tag still owed. The real
+  // question is whether corpus/ has moved SINCE THE LAST TAG.
   const dirty = execFileSync('git', ['status', '--porcelain', 'corpus/images'], { cwd: ROOT, encoding: 'utf8' }).trim();
-  if (!dirty) {
-    console.log('   Nothing to publish: inbox is empty and corpus/images is unchanged.');
+  const last = execFileSync('git', ['tag', '--list', 'v*', '--sort=-v:refname'], { cwd: ROOT, encoding: 'utf8' }).split('\n')[0]?.trim();
+  const sinceTag = last
+    ? execFileSync('git', ['diff', '--name-only', `${last}..HEAD`, '--', 'corpus'], { cwd: ROOT, encoding: 'utf8' }).trim()
+    : 'no tag yet';
+  if (!dirty && !sinceTag) {
+    console.log(`   Nothing to publish: corpus/ is unchanged since ${last}, and inbox is empty.`);
     if (!DRY) process.exit(0);
     console.log('   (dry) continuing anyway so you can see the plan');
+  } else if (!dirty) {
+    const n = sinceTag === 'no tag yet' ? '?' : sinceTag.split('\n').length;
+    console.log(`   inbox empty, tree clean — but ${n} corpus file(s) changed since ${last ?? 'the beginning'}. Releasing those.`);
+  } else {
+    console.log('   inbox empty but corpus/images has uncommitted changes — publishing those.');
   }
-  console.log('   inbox empty but corpus/images has uncommitted changes — publishing those.');
 }
 
 // ── 1. ingest → check → test, before ANY git write ─────────────────────────
