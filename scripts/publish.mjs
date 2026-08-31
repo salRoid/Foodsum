@@ -68,7 +68,16 @@ run('git', ['add', '-A']);
 // wrong rather than trusting that.
 const staged = execFileSync('git', ['diff', '--cached', '--name-only'], { cwd: ROOT, encoding: 'utf8' });
 if (/(^|\/)\.env|secret|\.pem$|\.key$/im.test(staged)) { console.error('✗ refusing: a secret-shaped path is staged:\n' + staged); process.exit(1); }
-run('git', ['commit', '-q', '-m', `corpus ${next}: ${inbox.length ? inbox.length + ' new image(s) — ' + inbox.map((f) => f.replace(/\.[^.]+$/, '')).join(', ') : 'corpus update'}`]);
+// A tag can be worth cutting with NOTHING to commit — images ingested and
+// committed earlier in the day are exactly that case, and `git commit` with an
+// empty index exits non-zero, which used to abort the whole publish one step
+// before the tag. Commit only when something is actually staged.
+const pending = execFileSync('git', ['diff', '--cached', '--name-only'], { cwd: ROOT, encoding: 'utf8' }).trim();
+if (pending) {
+  run('git', ['commit', '-q', '-m', `corpus ${next}: ${inbox.length ? inbox.length + ' new image(s) — ' + inbox.map((f) => f.replace(/\.[^.]+$/, '')).join(', ') : 'corpus update'}`]);
+} else {
+  console.log('   (nothing staged — tagging the commit already on this branch)');
+}
 run('git', ['tag', next]);
 run('git', ['push', '-q', 'origin', branch]);
 run('git', ['push', '-q', 'origin', next]);
