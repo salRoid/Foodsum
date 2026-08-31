@@ -973,7 +973,27 @@
         "dry aloo",
         "potato sabzi"
       ],
-      "variants": 0
+      "variants": 1,
+      "variantMeta": [
+        {
+          "v": 1,
+          "styleVersion": "v1",
+          "sizes": [
+            "1200x675",
+            "1200x900",
+            "120x120",
+            "160x120",
+            "160x90",
+            "300x300",
+            "400x225",
+            "400x300",
+            "600x600",
+            "800x450",
+            "800x600",
+            "900x900"
+          ]
+        }
+      ]
     },
     {
       "slug": "sem-sabzi",
@@ -985,7 +1005,27 @@
         "sem sabji",
         "sem sabzi"
       ],
-      "variants": 0
+      "variants": 1,
+      "variantMeta": [
+        {
+          "v": 1,
+          "styleVersion": "v1",
+          "sizes": [
+            "1200x675",
+            "1200x900",
+            "120x120",
+            "160x120",
+            "160x90",
+            "300x300",
+            "400x225",
+            "400x300",
+            "600x600",
+            "800x450",
+            "800x600",
+            "900x900"
+          ]
+        }
+      ]
     },
     {
       "slug": "bhindi-masala",
@@ -998,7 +1038,27 @@
         "bhindi sabzi",
         "okra"
       ],
-      "variants": 0
+      "variants": 1,
+      "variantMeta": [
+        {
+          "v": 1,
+          "styleVersion": "v1",
+          "sizes": [
+            "1200x675",
+            "1200x900",
+            "120x120",
+            "160x120",
+            "160x90",
+            "300x300",
+            "400x225",
+            "400x300",
+            "600x600",
+            "800x450",
+            "800x600",
+            "900x900"
+          ]
+        }
+      ]
     },
     {
       "slug": "american-corn",
@@ -1010,7 +1070,27 @@
         "salt and pepper american corn",
         "sweet corn"
       ],
-      "variants": 0
+      "variants": 1,
+      "variantMeta": [
+        {
+          "v": 1,
+          "styleVersion": "v1",
+          "sizes": [
+            "1200x675",
+            "1200x900",
+            "120x120",
+            "160x120",
+            "160x90",
+            "300x300",
+            "400x225",
+            "400x300",
+            "600x600",
+            "800x450",
+            "800x600",
+            "900x900"
+          ]
+        }
+      ]
     },
     {
       "slug": "coconut-chutney",
@@ -1020,7 +1100,27 @@
         "coconut chutney",
         "nariyal chutney"
       ],
-      "variants": 0
+      "variants": 1,
+      "variantMeta": [
+        {
+          "v": 1,
+          "styleVersion": "v1",
+          "sizes": [
+            "1200x675",
+            "1200x900",
+            "120x120",
+            "160x120",
+            "160x90",
+            "300x300",
+            "400x225",
+            "400x300",
+            "600x600",
+            "800x450",
+            "800x600",
+            "900x900"
+          ]
+        }
+      ]
     },
     {
       "slug": "sambar",
@@ -1030,7 +1130,27 @@
         "sambar",
         "sambhar"
       ],
-      "variants": 0
+      "variants": 1,
+      "variantMeta": [
+        {
+          "v": 1,
+          "styleVersion": "v1",
+          "sizes": [
+            "1200x675",
+            "1200x900",
+            "120x120",
+            "160x120",
+            "160x90",
+            "300x300",
+            "400x225",
+            "400x300",
+            "600x600",
+            "800x450",
+            "800x600",
+            "900x900"
+          ]
+        }
+      ]
     },
     {
       "slug": "idli",
@@ -1040,7 +1160,27 @@
         "idli",
         "idlis"
       ],
-      "variants": 0
+      "variants": 1,
+      "variantMeta": [
+        {
+          "v": 1,
+          "styleVersion": "v1",
+          "sizes": [
+            "1200x675",
+            "1200x900",
+            "120x120",
+            "160x120",
+            "160x90",
+            "300x300",
+            "400x225",
+            "400x300",
+            "600x600",
+            "800x450",
+            "800x600",
+            "900x900"
+          ]
+        }
+      ]
     },
     {
       "slug": "masala-dosa",
@@ -1051,7 +1191,27 @@
         "masala dosa",
         "plain dosa"
       ],
-      "variants": 0
+      "variants": 1,
+      "variantMeta": [
+        {
+          "v": 1,
+          "styleVersion": "v1",
+          "sizes": [
+            "1200x675",
+            "1200x900",
+            "120x120",
+            "160x120",
+            "160x90",
+            "300x300",
+            "400x225",
+            "400x300",
+            "600x600",
+            "800x450",
+            "800x600",
+            "900x900"
+          ]
+        }
+      ]
     },
     {
       "slug": "naan",
@@ -1061,7 +1221,27 @@
         "butter naan",
         "naan"
       ],
-      "variants": 0
+      "variants": 1,
+      "variantMeta": [
+        {
+          "v": 1,
+          "styleVersion": "v1",
+          "sizes": [
+            "1200x675",
+            "1200x900",
+            "120x120",
+            "160x120",
+            "160x90",
+            "300x300",
+            "400x225",
+            "400x300",
+            "600x600",
+            "800x450",
+            "800x600",
+            "900x900"
+          ]
+        }
+      ]
     },
     {
       "slug": "bhature",
@@ -1071,7 +1251,27 @@
         "bhatura",
         "bhature"
       ],
-      "variants": 0
+      "variants": 1,
+      "variantMeta": [
+        {
+          "v": 1,
+          "styleVersion": "v1",
+          "sizes": [
+            "1200x675",
+            "1200x900",
+            "120x120",
+            "160x120",
+            "160x90",
+            "300x300",
+            "400x225",
+            "400x300",
+            "600x600",
+            "800x450",
+            "800x600",
+            "900x900"
+          ]
+        }
+      ]
     },
     {
       "slug": "litti-chokha",
@@ -1093,7 +1293,27 @@
         "aloo sandwiches",
         "potato sandwich"
       ],
-      "variants": 0
+      "variants": 1,
+      "variantMeta": [
+        {
+          "v": 1,
+          "styleVersion": "v1",
+          "sizes": [
+            "1200x675",
+            "1200x900",
+            "120x120",
+            "160x120",
+            "160x90",
+            "300x300",
+            "400x225",
+            "400x300",
+            "600x600",
+            "800x450",
+            "800x600",
+            "900x900"
+          ]
+        }
+      ]
     },
     {
       "slug": "aloo-tikki-chaat",
@@ -1104,7 +1324,27 @@
         "aloo tikki chaat",
         "tikki chaat"
       ],
-      "variants": 0
+      "variants": 1,
+      "variantMeta": [
+        {
+          "v": 1,
+          "styleVersion": "v1",
+          "sizes": [
+            "1200x675",
+            "1200x900",
+            "120x120",
+            "160x120",
+            "160x90",
+            "300x300",
+            "400x225",
+            "400x300",
+            "600x600",
+            "800x450",
+            "800x600",
+            "900x900"
+          ]
+        }
+      ]
     },
     {
       "slug": "aloo-bhujiya",
@@ -1115,7 +1355,27 @@
         "bhujia",
         "bhujiya"
       ],
-      "variants": 0
+      "variants": 1,
+      "variantMeta": [
+        {
+          "v": 1,
+          "styleVersion": "v1",
+          "sizes": [
+            "1200x675",
+            "1200x900",
+            "120x120",
+            "160x120",
+            "160x90",
+            "300x300",
+            "400x225",
+            "400x300",
+            "600x600",
+            "800x450",
+            "800x600",
+            "900x900"
+          ]
+        }
+      ]
     },
     {
       "slug": "gulab-jamun",
@@ -1125,7 +1385,27 @@
         "gulab jamun",
         "gulab jamuns"
       ],
-      "variants": 0
+      "variants": 1,
+      "variantMeta": [
+        {
+          "v": 1,
+          "styleVersion": "v1",
+          "sizes": [
+            "1200x675",
+            "1200x900",
+            "120x120",
+            "160x120",
+            "160x90",
+            "300x300",
+            "400x225",
+            "400x300",
+            "600x600",
+            "800x450",
+            "800x600",
+            "900x900"
+          ]
+        }
+      ]
     },
     {
       "slug": "kaju-barfi",
@@ -1135,7 +1415,27 @@
         "kaju barfi",
         "kaju katli"
       ],
-      "variants": 0
+      "variants": 1,
+      "variantMeta": [
+        {
+          "v": 1,
+          "styleVersion": "v1",
+          "sizes": [
+            "1200x675",
+            "1200x900",
+            "120x120",
+            "160x120",
+            "160x90",
+            "300x300",
+            "400x225",
+            "400x300",
+            "600x600",
+            "800x450",
+            "800x600",
+            "900x900"
+          ]
+        }
+      ]
     },
     {
       "slug": "milk",
@@ -1145,7 +1445,27 @@
         "glass of milk",
         "milk"
       ],
-      "variants": 0
+      "variants": 1,
+      "variantMeta": [
+        {
+          "v": 1,
+          "styleVersion": "v1",
+          "sizes": [
+            "1200x675",
+            "1200x900",
+            "120x120",
+            "160x120",
+            "160x90",
+            "300x300",
+            "400x225",
+            "400x300",
+            "600x600",
+            "800x450",
+            "800x600",
+            "900x900"
+          ]
+        }
+      ]
     },
     {
       "slug": "peanut-butter",
@@ -1155,7 +1475,27 @@
         "pb",
         "peanut butter"
       ],
-      "variants": 0
+      "variants": 1,
+      "variantMeta": [
+        {
+          "v": 1,
+          "styleVersion": "v1",
+          "sizes": [
+            "1200x675",
+            "1200x900",
+            "120x120",
+            "160x120",
+            "160x90",
+            "300x300",
+            "400x225",
+            "400x300",
+            "600x600",
+            "800x450",
+            "800x600",
+            "900x900"
+          ]
+        }
+      ]
     },
     {
       "slug": "egg-curry",
