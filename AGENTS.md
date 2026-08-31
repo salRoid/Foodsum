@@ -10,37 +10,23 @@ nothing will notice until a card renders broken.
 
 ---
 
-## The loop
+## The loop — two commands, one review
 
-```bash
-npm run missing      # what needs generating, with the exact prompt for each
-#   (or `npm run export -- --out brief.json` for the same queue as machine-
-#    readable data, one record per subject, prompt and filename included)
-# …generate an image for one dish or one meal…
-# …LOOK AT IT. Reject a wrong dish here, not later…
-# …save it as inbox/<slug>.png…
-npm run ingest       # crops, resizes, converts, strips, files, indexes
+```
+npm run brief -- --prod   # ① what to generate: writes corpus/brief.json
+#   → read corpus/brief.json → `missing[]`. Each record has the exact `file`
+#     to write (inbox/<slug>.png) and the exact `prompt`. Generate ONE image
+#     per record. `candidates[]` are NOT yours — they are unresolved fragments
+#     awaiting a catalogue decision, and you must not invent slugs for them.
+# …LOOK AT EVERY IMAGE. Reject a wrong dish here, not later…
+npm run publish           # ② ingest → check → test → commit → tag vN+1 →
+                          #    push → repoint hosted Health → rebuild → prove
 ```
 
-`npm run missing` prints **two queues**:
-
-| | |
-|---|---|
-| **DISHES** | one dish, one vessel. The base of the corpus. |
-| **MEALS** | one composed plate of several things — the handful of meals eaten often enough to deserve a real photograph instead of a strip of dish pictures. |
-
-They use **different prompt prefixes**, both fixed, both in `STYLE.md`. Copy the
-one printed under the entry. A meal shot with the dish prompt is a bowl of one
-thing, and a dish shot with the meal prompt is a plate of inventions.
-
-Otherwise they are the same job and go through the same `npm run ingest`:
-`inbox/<slug>.png` either way, slug must already exist, no other difference.
-
-`npm run ingest` prints `✓` per accepted file and `✗ <reason>` per rejected one,
-and **a rejected file writes nothing at all**. If it rejects, fix the cause or
-regenerate — do not work around it.
-
----
+`npm run publish -- --dry` prints the plan and changes nothing. `npm run
+missing` / `npm run export` still exist and answer the wider question (every
+catalogue dish with no image, eaten or not); `brief` is scoped to what was
+actually LOGGED recently, which is the queue that matters.
 
 ## The prompt
 

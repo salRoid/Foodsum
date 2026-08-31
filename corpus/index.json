@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-08-26",
+  "generatedAt": "2026-08-31",
   "baseUrl": "/i",
   "sizes": [
     "160x120",
@@ -315,7 +315,10 @@
       "category": "legume",
       "keys": [
         "chana",
+        "chana ki sabzi",
         "chana masala",
+        "chana sabji",
+        "chana sabzi",
         "chickpeas",
         "chole",
         "kabuli chana"
@@ -405,6 +408,7 @@
         "katori rice",
         "plain rice",
         "rice",
+        "small rice",
         "steamed rice"
       ],
       "variants": 1,
@@ -611,6 +615,7 @@
         "paneer butter masala",
         "paneer curry",
         "paneer gravy",
+        "paneer lababdar",
         "paneer masala",
         "paneer sabzi",
         "shahi paneer"
@@ -801,6 +806,7 @@
       "category": "drink",
       "keys": [
         "chai",
+        "cup of tea",
         "masala chai",
         "milk tea",
         "tea"
@@ -949,6 +955,202 @@
           ]
         }
       ]
+    },
+    {
+      "slug": "aloo-sabzi",
+      "name": "Aloo Sabzi",
+      "category": "vegetable",
+      "keys": [
+        "aloo ki sabzi",
+        "aloo sabji",
+        "aloo sabzi",
+        "dry aloo",
+        "potato sabzi"
+      ],
+      "variants": 0
+    },
+    {
+      "slug": "sem-sabzi",
+      "name": "Sem Sabzi",
+      "category": "vegetable",
+      "keys": [
+        "flat beans sabzi",
+        "sem ki sabzi",
+        "sem sabji",
+        "sem sabzi"
+      ],
+      "variants": 0
+    },
+    {
+      "slug": "bhindi-masala",
+      "name": "Bhindi Masala",
+      "category": "vegetable",
+      "keys": [
+        "bhindi",
+        "bhindi ki sabzi",
+        "bhindi masala",
+        "bhindi sabzi",
+        "okra"
+      ],
+      "variants": 0
+    },
+    {
+      "slug": "american-corn",
+      "name": "American Corn",
+      "category": "vegetable",
+      "keys": [
+        "american corn",
+        "corn cup",
+        "salt and pepper american corn",
+        "sweet corn"
+      ],
+      "variants": 0
+    },
+    {
+      "slug": "coconut-chutney",
+      "name": "Coconut Chutney",
+      "category": "vegetable",
+      "keys": [
+        "coconut chutney",
+        "nariyal chutney"
+      ],
+      "variants": 0
+    },
+    {
+      "slug": "sambar",
+      "name": "Sambar",
+      "category": "legume",
+      "keys": [
+        "sambar",
+        "sambhar"
+      ],
+      "variants": 0
+    },
+    {
+      "slug": "idli",
+      "name": "Idli",
+      "category": "grain",
+      "keys": [
+        "idli",
+        "idlis"
+      ],
+      "variants": 0
+    },
+    {
+      "slug": "masala-dosa",
+      "name": "Masala Dosa",
+      "category": "grain",
+      "keys": [
+        "dosa",
+        "masala dosa",
+        "masala dosa with sambar and coconut chutney"
+      ],
+      "variants": 0
+    },
+    {
+      "slug": "naan",
+      "name": "Naan",
+      "category": "grain",
+      "keys": [
+        "butter naan",
+        "naan"
+      ],
+      "variants": 0
+    },
+    {
+      "slug": "bhature",
+      "name": "Bhature",
+      "category": "grain",
+      "keys": [
+        "bhatura",
+        "bhature",
+        "chole bhature"
+      ],
+      "variants": 0
+    },
+    {
+      "slug": "litti-chokha",
+      "name": "Litti Chokha",
+      "category": "grain",
+      "keys": [
+        "litti",
+        "litti chokha",
+        "litti with chokha"
+      ],
+      "variants": 0
+    },
+    {
+      "slug": "aloo-sandwich",
+      "name": "Aloo Sandwich",
+      "category": "grain",
+      "keys": [
+        "aloo sandwich",
+        "aloo sandwiches",
+        "potato sandwich"
+      ],
+      "variants": 0
+    },
+    {
+      "slug": "aloo-tikki-chaat",
+      "name": "Aloo Tikki Chaat",
+      "category": "snack",
+      "keys": [
+        "aloo tikki",
+        "aloo tikki chaat",
+        "tikki chaat"
+      ],
+      "variants": 0
+    },
+    {
+      "slug": "aloo-bhujiya",
+      "name": "Aloo Bhujiya",
+      "category": "snack",
+      "keys": [
+        "aloo bhujiya",
+        "bhujia",
+        "bhujiya"
+      ],
+      "variants": 0
+    },
+    {
+      "slug": "gulab-jamun",
+      "name": "Gulab Jamun",
+      "category": "snack",
+      "keys": [
+        "gulab jamun",
+        "gulab jamuns"
+      ],
+      "variants": 0
+    },
+    {
+      "slug": "kaju-barfi",
+      "name": "Kaju Barfi",
+      "category": "snack",
+      "keys": [
+        "kaju barfi",
+        "kaju katli"
+      ],
+      "variants": 0
+    },
+    {
+      "slug": "milk",
+      "name": "Milk",
+      "category": "dairy",
+      "keys": [
+        "glass of milk",
+        "milk"
+      ],
+      "variants": 0
+    },
+    {
+      "slug": "peanut-butter",
+      "name": "Peanut Butter",
+      "category": "nut",
+      "keys": [
+        "pb",
+        "peanut butter"
+      ],
+      "variants": 0
     }
   ],
   "meals": [

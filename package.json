@@ -17,7 +17,9 @@
     "pull": "node --experimental-strip-types scripts/pull.mjs",
     "add": "node --experimental-strip-types scripts/add.mjs",
     "ingest": "node --experimental-strip-types scripts/ingest.mjs",
-    "check": "node --experimental-strip-types scripts/check.mjs"
+    "check": "node --experimental-strip-types scripts/check.mjs",
+    "brief": "node --experimental-strip-types scripts/brief.mjs",
+    "publish": "node --experimental-strip-types scripts/publish.mjs"
   },
   "devDependencies": {
     "sharp": ">=0.34.5"
