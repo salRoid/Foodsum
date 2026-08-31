@@ -319,8 +319,11 @@
         "chana masala",
         "chana sabji",
         "chana sabzi",
+        "chhole",
         "chickpeas",
         "chole",
+        "chole masala",
+        "chole sabzi",
         "kabuli chana"
       ],
       "variants": 1,
@@ -870,6 +873,7 @@
       "category": "vegetable",
       "keys": [
         "aloo palak",
+        "aloo palak sabzi",
         "alu palak",
         "potato spinach"
       ],
@@ -931,7 +935,9 @@
       "category": "vegetable",
       "keys": [
         "cucumber",
+        "cucumber salad",
         "cucumber slices",
+        "cucumber slices salad",
         "kheera"
       ],
       "variants": 1,
@@ -1043,7 +1049,7 @@
       "keys": [
         "dosa",
         "masala dosa",
-        "masala dosa with sambar and coconut chutney"
+        "plain dosa"
       ],
       "variants": 0
     },
@@ -1063,8 +1069,7 @@
       "category": "grain",
       "keys": [
         "bhatura",
-        "bhature",
-        "chole bhature"
+        "bhature"
       ],
       "variants": 0
     },
@@ -1149,6 +1154,27 @@
       "keys": [
         "pb",
         "peanut butter"
+      ],
+      "variants": 0
+    },
+    {
+      "slug": "egg-curry",
+      "name": "Egg Curry",
+      "category": "egg",
+      "keys": [
+        "anda curry",
+        "egg curry",
+        "egg masala"
+      ],
+      "variants": 0
+    },
+    {
+      "slug": "paneer-tikka",
+      "name": "Paneer Tikka",
+      "category": "dairy",
+      "keys": [
+        "paneer tikka",
+        "tikka paneer"
       ],
       "variants": 0
     }
@@ -1476,6 +1502,276 @@
           ]
         }
       ]
+    },
+    {
+      "kind": "meal",
+      "slug": "idli-sambar",
+      "name": "Idli + sambar + coconut chutney",
+      "keys": [
+        "idli sambar",
+        "idli sambar chutney",
+        "idli sambar coconut chutney",
+        "idli sambhar"
+      ],
+      "variants": 0,
+      "dishes": [
+        "idli",
+        "sambar",
+        "coconut-chutney"
+      ],
+      "loggedTimes": 1
+    },
+    {
+      "kind": "meal",
+      "slug": "chole-bhature",
+      "name": "Bhature + chole",
+      "keys": [
+        "bhature chole",
+        "bhature chole gulab jamun small rice",
+        "chana bhatura",
+        "chhole bhature",
+        "chole bhatura",
+        "chole bhature"
+      ],
+      "variants": 0,
+      "dishes": [
+        "bhature",
+        "chana"
+      ],
+      "loggedTimes": 1
+    },
+    {
+      "kind": "meal",
+      "slug": "masala-dosa-plate",
+      "name": "Masala dosa + sambar + coconut chutney",
+      "keys": [
+        "dosa sambar chutney",
+        "masala dosa sambar coconut chutney",
+        "masala dosa with sambar and coconut chutney"
+      ],
+      "variants": 0,
+      "dishes": [
+        "masala-dosa",
+        "sambar",
+        "coconut-chutney"
+      ],
+      "loggedTimes": 1
+    },
+    {
+      "kind": "meal",
+      "slug": "paneer-lababdar-naan",
+      "name": "Paneer lababdar + naan",
+      "keys": [
+        "naan paneer lababdar salt and pepper american corn",
+        "paneer lababdar and naan",
+        "paneer lababdar naan",
+        "paneer lababdar with naan"
+      ],
+      "variants": 0,
+      "dishes": [
+        "paneer-curry",
+        "naan"
+      ],
+      "loggedTimes": 1
+    },
+    {
+      "kind": "meal",
+      "slug": "dal-roti-rice",
+      "name": "Dal + roti + rice",
+      "keys": [
+        "dal chawal roti",
+        "dal rice roti",
+        "dal roti and rice",
+        "dal roti rice",
+        "dal roti small rice"
+      ],
+      "variants": 0,
+      "dishes": [
+        "dal",
+        "roti",
+        "cooked-rice"
+      ],
+      "loggedTimes": 1
+    },
+    {
+      "kind": "meal",
+      "slug": "whey-banana-shake",
+      "name": "Milk + whey + banana",
+      "keys": [
+        "banana whey shake",
+        "milk whey banana",
+        "whey banana shake"
+      ],
+      "variants": 0,
+      "dishes": [
+        "milk",
+        "whey-protein-shake",
+        "banana"
+      ],
+      "loggedTimes": 7
+    },
+    {
+      "kind": "meal",
+      "slug": "greek-yogurt-apple",
+      "name": "Greek yogurt + apple",
+      "keys": [
+        "greek yogurt apple"
+      ],
+      "variants": 0,
+      "dishes": [
+        "greek-yogurt",
+        "apple"
+      ],
+      "loggedTimes": 7
+    },
+    {
+      "kind": "meal",
+      "slug": "rajma-roti",
+      "name": "Rajma + roti",
+      "keys": [
+        "rajma roti",
+        "rajma roti boondi raita",
+        "roti rajma curd",
+        "roti rajma salad"
+      ],
+      "variants": 0,
+      "dishes": [
+        "rajma",
+        "roti"
+      ],
+      "loggedTimes": 3
+    },
+    {
+      "kind": "meal",
+      "slug": "rajma-chawal",
+      "name": "Rajma + rice",
+      "keys": [
+        "rajma chawal",
+        "rajma rice",
+        "rajma rice salad"
+      ],
+      "variants": 0,
+      "dishes": [
+        "rajma",
+        "cooked-rice"
+      ],
+      "loggedTimes": 1
+    },
+    {
+      "kind": "meal",
+      "slug": "dal-chawal",
+      "name": "Dal + rice",
+      "keys": [
+        "dal and rice",
+        "dal chawal",
+        "dal rice",
+        "rice dal aloo sabji sem sabji"
+      ],
+      "variants": 0,
+      "dishes": [
+        "dal",
+        "cooked-rice"
+      ],
+      "loggedTimes": 1
+    },
+    {
+      "kind": "meal",
+      "slug": "chole-roti",
+      "name": "Chole + roti",
+      "keys": [
+        "chana masala roti",
+        "chana roti",
+        "chana sabji roti",
+        "chole roti",
+        "roti chana masala cucumber salad",
+        "roti chole curd cucumber"
+      ],
+      "variants": 0,
+      "dishes": [
+        "chana",
+        "roti"
+      ],
+      "loggedTimes": 3
+    },
+    {
+      "kind": "meal",
+      "slug": "aloo-sabzi-roti",
+      "name": "Aloo sabzi + roti",
+      "keys": [
+        "aloo sabji roti",
+        "aloo sabji rotis",
+        "aloo sabzi roti",
+        "roti aloo sabji boondi raita cucumber",
+        "roti aloo sabzi boondi raita"
+      ],
+      "variants": 0,
+      "dishes": [
+        "aloo-sabzi",
+        "roti"
+      ],
+      "loggedTimes": 3
+    },
+    {
+      "kind": "meal",
+      "slug": "paneer-sabzi-roti",
+      "name": "Paneer + sabzi + roti",
+      "keys": [
+        "paneer sabzi roti"
+      ],
+      "variants": 0,
+      "dishes": [
+        "paneer",
+        "mixed-vegetable-sabzi",
+        "roti"
+      ],
+      "loggedTimes": 2
+    },
+    {
+      "kind": "meal",
+      "slug": "boiled-eggs-sabzi-roti",
+      "name": "Boiled eggs + sabzi + roti",
+      "keys": [
+        "boiled eggs sabzi roti"
+      ],
+      "variants": 0,
+      "dishes": [
+        "boiled-eggs",
+        "mixed-vegetable-sabzi",
+        "roti"
+      ],
+      "loggedTimes": 1
+    },
+    {
+      "kind": "meal",
+      "slug": "egg-curry-roti",
+      "name": "Egg curry + roti",
+      "keys": [
+        "anda curry roti",
+        "egg curry roti"
+      ],
+      "variants": 0,
+      "dishes": [
+        "egg-curry",
+        "roti"
+      ],
+      "loggedTimes": 1
+    },
+    {
+      "kind": "meal",
+      "slug": "paneer-tikka-roti",
+      "name": "Paneer tikka + roti + sabzi",
+      "keys": [
+        "paneer tikka roti",
+        "paneer tikka roti sabzi",
+        "paneer tikka roti sabzi salad"
+      ],
+      "variants": 0,
+      "dishes": [
+        "paneer-tikka",
+        "roti",
+        "mixed-vegetable-sabzi"
+      ],
+      "loggedTimes": 1
     }
   ]
 }

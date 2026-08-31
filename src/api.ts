@@ -25,6 +25,7 @@ import {
   type MealTier,
   type Tier,
 } from './resolve.ts';
+import { portionGrams } from './portion.ts';
 import { imageUrlFor, type ImageUrlOptions } from './variant.ts';
 
 export interface MealImage {
@@ -68,6 +69,15 @@ export interface MealResolution {
    * the order the dishes were typed. May be empty.
    */
   images: MealImage[];
+  /**
+   * THE picture for this meal: the BIGGEST-PORTION fragment that has one.
+   * Ranked by `portionGrams` (explicit quantities beat defaults; ties keep the
+   * written order), skipping anything unresolved or imageless — so "2 roti +
+   * aloo palak" is the sabzi, and if the sabzi has no photograph yet it falls
+   * through to the roti rather than to nothing. A whole-meal photograph, when
+   * one exists, is the hero outright. Null only when NO fragment has a picture.
+   */
+  hero: MealImage | null;
   /** Fragments that resolved to a dish but that dish has no image on disk. */
   withoutImages: string[];
   /** Normalised keys that resolved to nothing. This is the corpus-growth queue. */
@@ -144,6 +154,7 @@ export function resolveMeal(
         images: [
           { slug: hit.meal.slug, name: hit.meal.name, tier: hit.tier, fragment: hit.text, url },
         ],
+        hero: { slug: hit.meal.slug, name: hit.meal.name, tier: hit.tier, fragment: hit.text, url },
         // The meal answered the question, so neither list has anything to add:
         // a fragment miss inside a plate we have photographed is not a gap in
         // the corpus, and putting it in the growth queue would ask for an image
@@ -159,6 +170,19 @@ export function resolveMeal(
   const images: MealImage[] = [];
   const withoutImages: string[] = [];
   const misses: string[] = [];
+
+  // Grams per fragment, then the hero: biggest first, written order on ties,
+  // first one that resolved AND has a picture. Computed from ALL fragments,
+  // not the capped `images` strip, so maxImages cannot hide the biggest.
+  for (const f of fragments) f.portionGrams = portionGrams(f.text, f.dish);
+  let hero: MealImage | null = null;
+  for (const f of [...fragments].sort((a, b) => (b.portionGrams ?? 0) - (a.portionGrams ?? 0))) {
+    if (!f.dish) continue;
+    const url = imageUrlFor(f.dish, idx.raw.baseUrl, opts);
+    if (!url) continue;
+    hero = { slug: f.dish.slug, name: f.dish.name, tier: f.tier, fragment: f.text, url };
+    break;
+  }
 
   // NOTE: an imageless meal hit is reported through `meal.rendered === false`,
   // NOT by pushing the meal slug into `withoutImages`. That list means "a DISH
@@ -199,6 +223,7 @@ export function resolveMeal(
       : null,
     fragments,
     images,
+    hero,
     withoutImages,
     misses,
     fullyResolved: fragments.length > 0 && fragments.every((f) => f.dish !== null),
@@ -273,6 +298,7 @@ export {
   RENDERABLE_TIERS,
 } from './resolve.ts';
 export { imageUrlFor, pickVariant, hash32 } from './variant.ts';
+export { portionGrams } from './portion.ts';
 export { normalise } from './normalise.ts';
 export { segment, softSplit } from './segment.ts';
 export { SIZES, FORMATS, LARGEST, ASPECTS, ASPECT_SIZES, ALL_SIZES } from './index-schema.ts';

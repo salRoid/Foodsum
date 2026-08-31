@@ -108,6 +108,8 @@ export function resolveMealEntry(idx: LoadedIndex, mealName: string): MealEntryR
 export interface FragmentResolution {
   /** The fragment as it was typed, trimmed. */
   text: string;
+  /** Estimated grams, for ranking the hero. Set by resolveMeal. */
+  portionGrams?: number;
   /** The lookup key it normalised to. Useful in a miss report. */
   key: string;
   tier: Tier;

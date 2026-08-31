@@ -140,7 +140,7 @@ export const DISHES: Dish[] = [
     name: 'Chana',
     category: 'legume',
     fromHealthFoodTable: true,
-    aliases: ['chana', 'chole', 'chickpeas', 'kabuli chana', 'chana masala', 'chana sabji', 'chana sabzi', 'chana ki sabzi'],
+    aliases: ['chana', 'chole', 'chickpeas', 'kabuli chana', 'chana masala', 'chana sabji', 'chana sabzi', 'chana ki sabzi', 'chole', 'chhole', 'chole masala', 'chana masala', 'chole sabzi'],
   },
   {
     slug: 'roti',
@@ -235,7 +235,7 @@ export const DISHES: Dish[] = [
     slug: 'aloo-palak',
     name: 'Aloo Palak',
     category: 'vegetable',
-    aliases: ['aloo palak', 'alu palak', 'potato spinach'],
+    aliases: ['aloo palak', 'alu palak', 'potato spinach', 'aloo palak sabzi', 'aloo-palak sabzi'],
   },
   {
     slug: 'boondi-raita',
@@ -244,7 +244,7 @@ export const DISHES: Dish[] = [
     aliases: ['boondi raita', 'bundi raita'],
     note: 'Bare "raita" is NOT an alias — cucumber, boondi and pineapple raita are different pictures. A bare "raita" fragment fails to nothing, correctly.',
   },
-  { slug: 'cucumber', name: 'Cucumber', category: 'vegetable', aliases: ['cucumber', 'kheera', 'cucumber slices'] },
+  { slug: 'cucumber', name: 'Cucumber', category: 'vegetable', aliases: ['cucumber', 'kheera', 'cucumber slices', 'cucumber salad', 'cucumber slices salad'] },
   // ── Grown from the 2026-08-31 miss list ─────────────────────────────────
   // Every entry below was a fragment Sal actually LOGGED (not planned) in the
   // last week that resolved to nothing. Generic dish names only; brands and
@@ -264,10 +264,10 @@ export const DISHES: Dish[] = [
     aliases: ['sambar', 'sambhar'] },
   { slug: 'idli', name: 'Idli', category: 'grain', aliases: ['idli', 'idlis'] },
   { slug: 'masala-dosa', name: 'Masala Dosa', category: 'grain',
-    aliases: ['masala dosa', 'dosa', 'masala dosa with sambar and coconut chutney'] },
+    aliases: ['masala dosa', 'dosa', 'plain dosa'] },
   { slug: 'naan', name: 'Naan', category: 'grain', aliases: ['naan', 'butter naan'] },
   { slug: 'bhature', name: 'Bhature', category: 'grain',
-    aliases: ['bhature', 'bhatura', 'chole bhature'] },
+    aliases: ['bhature', 'bhatura'] },   // 'chole bhature' is the MEAL (meals.ts), not this dish
   { slug: 'litti-chokha', name: 'Litti Chokha', category: 'grain',
     aliases: ['litti chokha', 'litti with chokha', 'litti'] },
   { slug: 'aloo-sandwich', name: 'Aloo Sandwich', category: 'grain',
@@ -283,6 +283,11 @@ export const DISHES: Dish[] = [
   { slug: 'milk', name: 'Milk', category: 'dairy', aliases: ['milk', 'glass of milk'] },
   { slug: 'peanut-butter', name: 'Peanut Butter', category: 'nut',
     aliases: ['peanut butter', 'pb'] },
+  // ── Two more from the full 71-row sweep, 2026-08-31 ─────────────────────
+  { slug: 'egg-curry', name: 'Egg Curry', category: 'egg',
+    aliases: ['egg curry', 'anda curry', 'egg masala'] },
+  { slug: 'paneer-tikka', name: 'Paneer Tikka', category: 'dairy',
+    aliases: ['paneer tikka', 'tikka paneer'] },
 ];
 
 /**

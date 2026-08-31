@@ -135,6 +135,139 @@ export const MEALS: Meal[] = [
     aliases: ['paneer bhurji + 1 roti + salad', 'paneer bhurji + roti + salad'],
     note: 'Composes to two known dishes; "salad" is a deliberate refusal at dish level (a category, not a dish) and stays unresolved as a component. That is fine here — the MEAL picture shows the salad that was actually on the plate, which is precisely the thing a generic salad photo could not.',
   },
+  // ── Combos, 2026-08-31 ─────────────────────────────────────────────────
+  // Sal: "idli sambhar is a dish, it's a combo; chole bhature is a dish which
+  // comes in combo". A composed plate is what THIS catalogue is for — one
+  // photograph of the plate beats a strip of its parts. The parts still exist
+  // as dishes (idli alone is real), but the plate leads whenever the logged
+  // string names it. Components are DERIVED from `name` by the real matcher.
+  {
+    slug: 'idli-sambar',
+    name: 'Idli + sambar + coconut chutney',
+    loggedTimes: 1,
+    aliases: ['idli sambar', 'idli sambhar', 'idli sambar chutney',
+      '4 idli + 1 katori sambar + 1 katori coconut chutney'],
+  },
+  {
+    slug: 'chole-bhature',
+    name: 'Bhature + chole',
+    loggedTimes: 1,
+    aliases: ['chole bhature', 'chhole bhature', 'chole bhatura', 'chana bhatura',
+      '3 bhature + 2 katori chole + 1 gulab jamun + small rice'],
+    note: 'The logged plate carried a gulab jamun and rice too; the photograph is the chole bhature, which is what the plate IS.',
+  },
+  {
+    slug: 'masala-dosa-plate',
+    name: 'Masala dosa + sambar + coconut chutney',
+    loggedTimes: 1,
+    aliases: ['masala dosa with sambar and coconut chutney',
+      '2 masala dosa with sambar and coconut chutney', 'dosa sambar chutney'],
+  },
+  {
+    slug: 'paneer-lababdar-naan',
+    name: 'Paneer lababdar + naan',
+    loggedTimes: 1,
+    aliases: ['paneer lababdar with naan', 'paneer lababdar naan', 'paneer lababdar and naan',
+      'paneer lababdar + 1 naan', 'paneer lababdar + 2 naan',
+      '1 naan, paneer lababdar, salt and pepper american corn'],  // the exact logged plate
+    note: 'Sal, 2026-08-31: "Paneer Lababdar with Naan was added yesterday". The dish half resolves to paneer-curry; the plate is its own photograph.',
+  },
+  {
+    slug: 'dal-roti-rice',
+    name: 'Dal + roti + rice',
+    loggedTimes: 1,
+    aliases: ['dal roti rice', 'dal rice roti', 'dal roti and rice', 'dal chawal roti',
+      'dal + roti + rice', 'dal + 1 roti + rice', 'dal + 2 roti + rice', 'dal + 1 roti + small rice'],
+    note: 'Sal, 2026-08-31: "Dal Roti and Rice is a combo too". Sits beside dal-roti-sprouts-salad and dal-roti-mixed-veg-sabzi — same plate family, different third item.',
+  },
+  // ── THE FULL SWEEP, 2026-08-31 ──────────────────────────────────────────
+  // Sal: "Don't miss out on combos — it will bite us in the back." Every one
+  // of the 71 production rows was classified; these are the plates that were
+  // still resolving as loose fragments. Rule kept from chole-bhature: the exact
+  // logged string is an alias even when it carries an extra side, because the
+  // photograph is what the plate IS. A string carrying a BRAND is never
+  // aliased (MEALS_NOT_TAKEN) — the hero rule handles it instead.
+  {
+    slug: 'whey-banana-shake',
+    name: 'Milk + whey + banana',
+    loggedTimes: 7,
+    aliases: ['milk + 1 scoop whey + banana', 'milk + whey + banana', 'whey banana shake',
+      'banana whey shake', 'milk whey banana'],
+    note: 'The SECOND most-logged string in the ledger (7×). One glass, one photograph.',
+  },
+  {
+    slug: 'greek-yogurt-apple',
+    name: 'Greek yogurt + apple',
+    loggedTimes: 7,
+    aliases: ['greek yogurt 200g + apple', 'greek yogurt + apple', 'greek yogurt apple'],
+    note: 'Joint second most-logged (7×). Sibling of greek-yogurt-banana and -almonds.',
+  },
+  {
+    slug: 'rajma-roti',
+    name: 'Rajma + roti',
+    loggedTimes: 3,
+    aliases: ['rajma roti', 'rajma + roti', 'rajma + 3 roti + boondi raita',
+      '2 roti + rajma + curd', '2 roti + rajma + salad', 'rajma + 2 roti', 'rajma + 3 roti'],
+  },
+  {
+    slug: 'rajma-chawal',
+    name: 'Rajma + rice',
+    loggedTimes: 1,
+    aliases: ['rajma chawal', 'rajma rice', 'rajma + rice', 'rajma + 1 katori rice',
+      'rajma + 1 katori rice + salad', 'rajma + rice + salad'],
+  },
+  {
+    slug: 'dal-chawal',
+    name: 'Dal + rice',
+    loggedTimes: 1,
+    aliases: ['dal chawal', 'dal rice', 'dal and rice', 'dal + rice', '1 katori dal + 1 katori rice',
+      '2 katori rice, 1 katori dal, aloo sabji, sem sabji'],
+    note: 'Distinct from dal-roti-rice: no roti on this plate.',
+  },
+  {
+    slug: 'chole-roti',
+    name: 'Chole + roti',
+    loggedTimes: 3,
+    aliases: ['chole roti', 'chana roti', 'chana masala roti', 'chole + roti', 'chana + roti',
+      '2 roti + chole + curd + cucumber', '2 roti + chana masala + cucumber salad',
+      '1 katori chana sabji, 3 roti', 'chana sabji + 3 roti'],
+  },
+  {
+    slug: 'aloo-sabzi-roti',
+    name: 'Aloo sabzi + roti',
+    loggedTimes: 3,
+    aliases: ['aloo sabzi roti', 'aloo sabji roti', 'aloo sabzi + roti', 'aloo sabji + 3 rotis',
+      '3 roti + 1 katori aloo sabzi + boondi raita', '2 roti + aloo sabji + boondi raita + cucumber',
+      'aloo sabji + 2 roti', 'aloo sabzi + 2 roti', 'aloo sabzi + 3 roti'],
+  },
+  {
+    slug: 'paneer-sabzi-roti',
+    name: 'Paneer + sabzi + roti',
+    loggedTimes: 2,
+    aliases: ['paneer + sabzi + 2 roti', 'paneer + sabzi + 1 roti', 'paneer sabzi roti',
+      'paneer (75g) + sabzi + 2 roti', 'paneer (75g) + sabzi + 1 roti'],
+  },
+  {
+    slug: 'boiled-eggs-sabzi-roti',
+    name: 'Boiled eggs + sabzi + roti',
+    loggedTimes: 1,
+    aliases: ['3 boiled eggs + sabzi + 1 roti', 'boiled eggs + sabzi + roti', 'boiled eggs sabzi roti',
+      '2 boiled eggs + sabzi + 1 roti'],
+  },
+  {
+    slug: 'egg-curry-roti',
+    name: 'Egg curry + roti',
+    loggedTimes: 1,
+    aliases: ['egg curry roti', 'egg curry + roti', 'egg curry (3 eggs) + 2 roti', 'egg curry + 2 roti',
+      'anda curry roti'],
+  },
+  {
+    slug: 'paneer-tikka-roti',
+    name: 'Paneer tikka + roti + sabzi',
+    loggedTimes: 1,
+    aliases: ['paneer tikka roti', 'paneer tikka + roti', 'paneer tikka (100g) + 1 roti + sabzi + salad',
+      'paneer tikka + 1 roti + sabzi + salad', 'paneer tikka + 1 roti + sabzi'],
+  },
 ];
 
 /**
