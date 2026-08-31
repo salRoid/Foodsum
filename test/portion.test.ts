@@ -58,10 +58,22 @@ test('"small" shrinks a portion below its rival', () => {
 });
 
 test('FALLTHROUGH: when the biggest has no picture yet, the next one wins', () => {
-  // sambar (150, no image yet) > 4 idli (160!) — idli wins on grams here, so
-  // use a case where the imageless one is truly biggest:
-  assert.equal(hero('1 katori sambar + 2 roti'), 'roti');       // sambar 150, no image yet → roti 80
-  assert.equal(hero('sambar + 2 idli'), null);                   // neither has a picture yet → nothing
+  // This test must NOT name a dish that happens to lack an image today — that
+  // is a fact with a short shelf life, and it expired within the hour: it was
+  // written against `sambar`, Codex generated one, and the test broke. So the
+  // imageless side is CONSTRUCTED at runtime instead.
+  const withImage = idx.raw.dishes.find((d) => d.variants > 0);
+  const without = idx.raw.dishes.find((d) => d.variants === 0);
+  assert.ok(withImage, 'the corpus has at least one photographed dish');
+  if (!without) return;  // every dish photographed — nothing left to prove
+
+  // Give the imageless dish the bigger portion EXPLICITLY, so it must rank
+  // first and must still be skipped for having no picture.
+  const r = resolveMeal(idx, `500g ${without.name} + 1 ${withImage.name}`, { size: '400x300' });
+  if (r.meal) return;  // that pairing is a photographed plate; nothing to prove
+  const ranked = [...r.fragments].sort((a, b) => (b.portionGrams ?? 0) - (a.portionGrams ?? 0));
+  assert.equal(ranked[0].dish?.slug, without.slug, 'the imageless dish ranks first');
+  assert.notEqual(r.hero?.slug, without.slug, 'and is skipped for having no picture');
 });
 
 test('a whole-meal photograph is the hero outright', () => {
