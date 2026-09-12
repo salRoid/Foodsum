@@ -33,27 +33,9 @@ Suite-wide open work stays in **`../NEXT.md`**.
 
 - **NOT verified: no image has been generated from an exported brief**, so
   what is proven is that the data comes out complete and correct, not that a
-  generation run driven from it produces anything. **Also found, not fixed: 3
-  of the 38 tests fail, and they failed before this change** — `a dish with no
-  images resolves but yields NO image`, `the shipped (imageless) corpus
-  behaves exactly as it did before meals`, and the `npm run missing` queue
-  test. All three assume an EMPTY corpus, and the corpus now holds **1 dish +
-  5 meal** images. They are stale assumptions rather than regressions; fixing
-  them means deciding what those tests should assert now, which is not a
-  drive-by.
-
-### 2026-08-25 — Foodsum's image pipeline: the agent drops a picture in `inbox/`, code does the rest
-
-- **NOT verified — and this is the honest limit of the work.** **No real
-  generated food image has ever been through this pipeline.** Every input was
-  synthetic (flat shapes and noise), so what is proven is the mechanical
-  contract — crop, resize, encode, budget, strip, name, index, reject — and
-  nothing at all about whether an image model actually follows `STYLE.md`.
-  Whether generations come back as consistent 90° flat-lays on plain white
-  ceramic with a contact shadow, and whether the 40 KB budget is comfortable
-  or tight for a real photograph (a busy image is exactly what blows it), are
-  both open until Sal generates one. The style contract is unproven, not
-  proven.
+  future non-empty `brief.missing[]` generation run consumes its JSON fields
+  end to end. The live brief currently has no missing catalogue dishes, so
+  that path cannot be exercised honestly without a synthetic input.
 
 ### 2026-08-25 — Foodsum is built as a library: segment, resolve by exact lookup, render nothing when unsure
 
@@ -66,19 +48,12 @@ Suite-wide open work stays in **`../NEXT.md`**.
   photo wins and the lookup is the fallback beneath it — the same precedence
   exercises already use.
 
-- **NOT verified: nothing has been rendered.** No image exists, no UI consumes
-  this, and the visual half of "is this the right picture of dal" cannot begin
-  until the corpus does.
-
 ### 2026-08-25 — Foodsum goes HYBRID: per-dish is the base, per-meal wins when we have the plate
 
-- **NOT verified.** No meal image has ever been generated, so nothing here
-  shows that a model follows the new meal prefix, that a composed plate
-  survives the 4:3 centre crop as predictably as a single bowl does, or that
-  it fits the 40 KB budget at 400×300 — a plate of several items is busier
-  than one bowl, and that budget is the thing most likely to bite first. Every
-  meal-image test uses a placeholder file. `npm run ingest` was **not** run
-  with a real meal file, and nothing has been seen in Health's UI.
+- **NOT verified: the new meal photographs have not been seen in Health's
+  hosted UI.** Generation, visual review, 4:3/1:1/16:9 cropping, and ingest are
+  now proven for all 24 catalogue meals; the remaining check is publishing the
+  corpus and viewing the Diet screen through authenticated Health.
 
 ### 2026-08-25 — Foodsum deploys as a shared library; its IMAGES do not
 
@@ -86,4 +61,3 @@ Suite-wide open work stays in **`../NEXT.md`**.
   materialisation step and the hosted `NEXT_PUBLIC_FOODSUM_BASE` are proven as
   far as "the files are in place", not as "hosted Health rendered a meal
   photo".
-

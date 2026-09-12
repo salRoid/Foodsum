@@ -78,12 +78,21 @@ function fromProd() {
 
 function fromLocal() {
   const url = dbUrl(argv);
-  const rows = query(url, `select date, planned, name from "Meal" where date >= '${since}' order by date`);
-  return rows.map((r) => ({
-    date: String(r.date ?? r[0]),
-    planned: r.planned === true || r.planned === 't' || r.planned === 'true',
-    name: String(r.name ?? r[2]).trim(),
-  }));
+  // `query()` deliberately returns one string per psql output row. Ask
+  // Postgres for the same tab-delimited shape as the production SSH path so
+  // local and production parsing cannot drift apart. Reading the default
+  // pipe-delimited output as if it were an object turned every local meal name
+  // into an empty string and produced a plausible-looking, empty brief.
+  const sql = `select date || E'\\t' || planned || E'\\t' || name from "Meal" `
+            + `where date >= '${since}' order by date`;
+  return query(url, sql).map((line) => {
+    const [date, planned, ...rest] = line.split('\t');
+    return {
+      date,
+      planned: planned === 'true' || planned === 't',
+      name: rest.join('\t').trim(),
+    };
+  });
 }
 
 const all = has('--prod') ? fromProd() : fromLocal();

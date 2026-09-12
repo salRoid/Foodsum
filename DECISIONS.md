@@ -23,6 +23,40 @@ Format: what was decided · why · what was rejected · consequences.
 
 ---
 
+## 2026-09-12 — Production Health is mirrored locally before the meal-image queue is generated
+
+**The source of truth was refreshed before generation.** `./sync-db.sh sync
+Health` mirrored the VPS database into `health_db_local`; the resulting Foodsum
+run read 186 meal rows, including 71 logged rows in the 30-day brief window.
+The catalogue already covered every recently logged dish it could resolve, and
+`npm run missing -- --db --demand --meals` identified 16 catalogue meals with
+no photograph.
+
+**The local brief reader was fixed in the same run.** `scripts/brief.mjs` had
+treated `query()`'s one-string-per-row result as an object, so a local brief
+turned all 186 rows into empty meal names while the production SSH path worked.
+The local query now asks Postgres for the same tab-delimited row shape as the
+production path and parses both paths consistently. A rerun produced the same
+71 logged meals and 41 unresolved-fragment candidates as the direct production
+brief instead of one empty candidate repeated 186 times.
+
+**All 16 missing meal photographs were generated and visually reviewed.** A
+first generation was rejected whenever it added a dal bowl, onion/chilli/pickle
+accompaniments, or represented whey as dry powder. Narrow edits removed only
+those incorrect components while preserving the fixed `STYLE.md` composition.
+No candidate fragment from the brief was promoted into `src/dishes.ts`; that
+still requires catalogue judgement, and the generating-agent contract forbids
+inventing slugs.
+
+**Verified by execution:** all 16 accepted sources were square and at least
+1200 px; ingest produced all 12 rungs for every source and finished with 24/24
+meal entries photographed. `npm run check` verified 876 indexed files with no
+orphans, `npm test` passed 47/47, and `npm run missing -- --meals` reports zero.
+The corpus is local only in this change; no tag, push, Health rebuild, or deploy
+was performed.
+
+---
+
 ## 2026-08-26 — Dry paneer and paneer curry are two dishes; the generation brief stops saying "4:3"
 
 **Decided (Sal: "also have dry panner and paneer curry different").** Foodsum

@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-08-31",
+  "generatedAt": "2026-09-11",
   "baseUrl": "/i",
   "sizes": [
     "160x120",
@@ -1873,13 +1873,33 @@
         "idli sambar coconut chutney",
         "idli sambhar"
       ],
-      "variants": 0,
+      "variants": 1,
       "dishes": [
         "idli",
         "sambar",
         "coconut-chutney"
       ],
-      "loggedTimes": 1
+      "loggedTimes": 1,
+      "variantMeta": [
+        {
+          "v": 1,
+          "styleVersion": "v1",
+          "sizes": [
+            "1200x675",
+            "1200x900",
+            "120x120",
+            "160x120",
+            "160x90",
+            "300x300",
+            "400x225",
+            "400x300",
+            "600x600",
+            "800x450",
+            "800x600",
+            "900x900"
+          ]
+        }
+      ]
     },
     {
       "kind": "meal",
@@ -1893,12 +1913,32 @@
         "chole bhatura",
         "chole bhature"
       ],
-      "variants": 0,
+      "variants": 1,
       "dishes": [
         "bhature",
         "chana"
       ],
-      "loggedTimes": 1
+      "loggedTimes": 1,
+      "variantMeta": [
+        {
+          "v": 1,
+          "styleVersion": "v1",
+          "sizes": [
+            "1200x675",
+            "1200x900",
+            "120x120",
+            "160x120",
+            "160x90",
+            "300x300",
+            "400x225",
+            "400x300",
+            "600x600",
+            "800x450",
+            "800x600",
+            "900x900"
+          ]
+        }
+      ]
     },
     {
       "kind": "meal",
@@ -1909,13 +1949,33 @@
         "masala dosa sambar coconut chutney",
         "masala dosa with sambar and coconut chutney"
       ],
-      "variants": 0,
+      "variants": 1,
       "dishes": [
         "masala-dosa",
         "sambar",
         "coconut-chutney"
       ],
-      "loggedTimes": 1
+      "loggedTimes": 1,
+      "variantMeta": [
+        {
+          "v": 1,
+          "styleVersion": "v1",
+          "sizes": [
+            "1200x675",
+            "1200x900",
+            "120x120",
+            "160x120",
+            "160x90",
+            "300x300",
+            "400x225",
+            "400x300",
+            "600x600",
+            "800x450",
+            "800x600",
+            "900x900"
+          ]
+        }
+      ]
     },
     {
       "kind": "meal",
@@ -1927,12 +1987,32 @@
         "paneer lababdar naan",
         "paneer lababdar with naan"
       ],
-      "variants": 0,
+      "variants": 1,
       "dishes": [
         "paneer-curry",
         "naan"
       ],
-      "loggedTimes": 1
+      "loggedTimes": 1,
+      "variantMeta": [
+        {
+          "v": 1,
+          "styleVersion": "v1",
+          "sizes": [
+            "1200x675",
+            "1200x900",
+            "120x120",
+            "160x120",
+            "160x90",
+            "300x300",
+            "400x225",
+            "400x300",
+            "600x600",
+            "800x450",
+            "800x600",
+            "900x900"
+          ]
+        }
+      ]
     },
     {
       "kind": "meal",
@@ -1945,13 +2025,33 @@
         "dal roti rice",
         "dal roti small rice"
       ],
-      "variants": 0,
+      "variants": 1,
       "dishes": [
         "dal",
         "roti",
         "cooked-rice"
       ],
-      "loggedTimes": 1
+      "loggedTimes": 1,
+      "variantMeta": [
+        {
+          "v": 1,
+          "styleVersion": "v1",
+          "sizes": [
+            "1200x675",
+            "1200x900",
+            "120x120",
+            "160x120",
+            "160x90",
+            "300x300",
+            "400x225",
+            "400x300",
+            "600x600",
+            "800x450",
+            "800x600",
+            "900x900"
+          ]
+        }
+      ]
     },
     {
       "kind": "meal",
@@ -1962,13 +2062,33 @@
         "milk whey banana",
         "whey banana shake"
       ],
-      "variants": 0,
+      "variants": 1,
       "dishes": [
         "milk",
         "whey-protein-shake",
         "banana"
       ],
-      "loggedTimes": 7
+      "loggedTimes": 7,
+      "variantMeta": [
+        {
+          "v": 1,
+          "styleVersion": "v1",
+          "sizes": [
+            "1200x675",
+            "1200x900",
+            "120x120",
+            "160x120",
+            "160x90",
+            "300x300",
+            "400x225",
+            "400x300",
+            "600x600",
+            "800x450",
+            "800x600",
+            "900x900"
+          ]
+        }
+      ]
     },
     {
       "kind": "meal",
@@ -1977,12 +2097,32 @@
       "keys": [
         "greek yogurt apple"
       ],
-      "variants": 0,
+      "variants": 1,
       "dishes": [
         "greek-yogurt",
         "apple"
       ],
-      "loggedTimes": 7
+      "loggedTimes": 7,
+      "variantMeta": [
+        {
+          "v": 1,
+          "styleVersion": "v1",
+          "sizes": [
+            "1200x675",
+            "1200x900",
+            "120x120",
+            "160x120",
+            "160x90",
+            "300x300",
+            "400x225",
+            "400x300",
+            "600x600",
+            "800x450",
+            "800x600",
+            "900x900"
+          ]
+        }
+      ]
     },
     {
       "kind": "meal",
@@ -1994,12 +2134,32 @@
         "roti rajma curd",
         "roti rajma salad"
       ],
-      "variants": 0,
+      "variants": 1,
       "dishes": [
         "rajma",
         "roti"
       ],
-      "loggedTimes": 3
+      "loggedTimes": 3,
+      "variantMeta": [
+        {
+          "v": 1,
+          "styleVersion": "v1",
+          "sizes": [
+            "1200x675",
+            "1200x900",
+            "120x120",
+            "160x120",
+            "160x90",
+            "300x300",
+            "400x225",
+            "400x300",
+            "600x600",
+            "800x450",
+            "800x600",
+            "900x900"
+          ]
+        }
+      ]
     },
     {
       "kind": "meal",
@@ -2010,12 +2170,32 @@
         "rajma rice",
         "rajma rice salad"
       ],
-      "variants": 0,
+      "variants": 1,
       "dishes": [
         "rajma",
         "cooked-rice"
       ],
-      "loggedTimes": 1
+      "loggedTimes": 1,
+      "variantMeta": [
+        {
+          "v": 1,
+          "styleVersion": "v1",
+          "sizes": [
+            "1200x675",
+            "1200x900",
+            "120x120",
+            "160x120",
+            "160x90",
+            "300x300",
+            "400x225",
+            "400x300",
+            "600x600",
+            "800x450",
+            "800x600",
+            "900x900"
+          ]
+        }
+      ]
     },
     {
       "kind": "meal",
@@ -2027,12 +2207,32 @@
         "dal rice",
         "rice dal aloo sabji sem sabji"
       ],
-      "variants": 0,
+      "variants": 1,
       "dishes": [
         "dal",
         "cooked-rice"
       ],
-      "loggedTimes": 1
+      "loggedTimes": 1,
+      "variantMeta": [
+        {
+          "v": 1,
+          "styleVersion": "v1",
+          "sizes": [
+            "1200x675",
+            "1200x900",
+            "120x120",
+            "160x120",
+            "160x90",
+            "300x300",
+            "400x225",
+            "400x300",
+            "600x600",
+            "800x450",
+            "800x600",
+            "900x900"
+          ]
+        }
+      ]
     },
     {
       "kind": "meal",
@@ -2046,12 +2246,32 @@
         "roti chana masala cucumber salad",
         "roti chole curd cucumber"
       ],
-      "variants": 0,
+      "variants": 1,
       "dishes": [
         "chana",
         "roti"
       ],
-      "loggedTimes": 3
+      "loggedTimes": 3,
+      "variantMeta": [
+        {
+          "v": 1,
+          "styleVersion": "v1",
+          "sizes": [
+            "1200x675",
+            "1200x900",
+            "120x120",
+            "160x120",
+            "160x90",
+            "300x300",
+            "400x225",
+            "400x300",
+            "600x600",
+            "800x450",
+            "800x600",
+            "900x900"
+          ]
+        }
+      ]
     },
     {
       "kind": "meal",
@@ -2064,12 +2284,32 @@
         "roti aloo sabji boondi raita cucumber",
         "roti aloo sabzi boondi raita"
       ],
-      "variants": 0,
+      "variants": 1,
       "dishes": [
         "aloo-sabzi",
         "roti"
       ],
-      "loggedTimes": 3
+      "loggedTimes": 3,
+      "variantMeta": [
+        {
+          "v": 1,
+          "styleVersion": "v1",
+          "sizes": [
+            "1200x675",
+            "1200x900",
+            "120x120",
+            "160x120",
+            "160x90",
+            "300x300",
+            "400x225",
+            "400x300",
+            "600x600",
+            "800x450",
+            "800x600",
+            "900x900"
+          ]
+        }
+      ]
     },
     {
       "kind": "meal",
@@ -2078,13 +2318,33 @@
       "keys": [
         "paneer sabzi roti"
       ],
-      "variants": 0,
+      "variants": 1,
       "dishes": [
         "paneer",
         "mixed-vegetable-sabzi",
         "roti"
       ],
-      "loggedTimes": 2
+      "loggedTimes": 2,
+      "variantMeta": [
+        {
+          "v": 1,
+          "styleVersion": "v1",
+          "sizes": [
+            "1200x675",
+            "1200x900",
+            "120x120",
+            "160x120",
+            "160x90",
+            "300x300",
+            "400x225",
+            "400x300",
+            "600x600",
+            "800x450",
+            "800x600",
+            "900x900"
+          ]
+        }
+      ]
     },
     {
       "kind": "meal",
@@ -2093,13 +2353,33 @@
       "keys": [
         "boiled eggs sabzi roti"
       ],
-      "variants": 0,
+      "variants": 1,
       "dishes": [
         "boiled-eggs",
         "mixed-vegetable-sabzi",
         "roti"
       ],
-      "loggedTimes": 1
+      "loggedTimes": 1,
+      "variantMeta": [
+        {
+          "v": 1,
+          "styleVersion": "v1",
+          "sizes": [
+            "1200x675",
+            "1200x900",
+            "120x120",
+            "160x120",
+            "160x90",
+            "300x300",
+            "400x225",
+            "400x300",
+            "600x600",
+            "800x450",
+            "800x600",
+            "900x900"
+          ]
+        }
+      ]
     },
     {
       "kind": "meal",
@@ -2109,12 +2389,32 @@
         "anda curry roti",
         "egg curry roti"
       ],
-      "variants": 0,
+      "variants": 1,
       "dishes": [
         "egg-curry",
         "roti"
       ],
-      "loggedTimes": 1
+      "loggedTimes": 1,
+      "variantMeta": [
+        {
+          "v": 1,
+          "styleVersion": "v1",
+          "sizes": [
+            "1200x675",
+            "1200x900",
+            "120x120",
+            "160x120",
+            "160x90",
+            "300x300",
+            "400x225",
+            "400x300",
+            "600x600",
+            "800x450",
+            "800x600",
+            "900x900"
+          ]
+        }
+      ]
     },
     {
       "kind": "meal",
@@ -2125,13 +2425,33 @@
         "paneer tikka roti sabzi",
         "paneer tikka roti sabzi salad"
       ],
-      "variants": 0,
+      "variants": 1,
       "dishes": [
         "paneer-tikka",
         "roti",
         "mixed-vegetable-sabzi"
       ],
-      "loggedTimes": 1
+      "loggedTimes": 1,
+      "variantMeta": [
+        {
+          "v": 1,
+          "styleVersion": "v1",
+          "sizes": [
+            "1200x675",
+            "1200x900",
+            "120x120",
+            "160x120",
+            "160x90",
+            "300x300",
+            "400x225",
+            "400x300",
+            "600x600",
+            "800x450",
+            "800x600",
+            "900x900"
+          ]
+        }
+      ]
     }
   ]
 }
