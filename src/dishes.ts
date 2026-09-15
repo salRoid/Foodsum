@@ -229,7 +229,25 @@ export const DISHES: Dish[] = [
     aliases: ['curd', 'dahi', 'plain curd', 'yogurt', 'yoghurt'],
     note: 'Deliberately NOT an alias of greek-yogurt. Set curd and strained yogurt look different on a plate, and this corpus exists to be looked at.',
   },
-  { slug: 'tea', name: 'Tea', category: 'drink', aliases: ['tea', 'chai', 'masala chai', 'milk tea', 'cup of tea'] },
+  {
+    slug: 'tea',
+    name: 'Tea',
+    category: 'drink',
+    aliases: [
+      'tea', 'chai', 'masala chai', 'masala tea', 'milk tea', 'cup of tea', 'chai tea',
+      // Qualified spellings of the SAME cup. "Ginger tea" is milk chai with
+      // adrak in it — the picture is the picture of tea, so it belongs here.
+      // Reported 2026-09-15: "tea" rendered, "ginger tea" rendered nothing.
+      'ginger tea', 'ginger chai', 'adrak chai', 'adrak tea', 'adrak wali chai',
+      'elaichi chai', 'cardamom chai', 'cardamom tea', 'tea with milk',
+    ],
+  },
+  // Green and black tea are NOT aliases of `tea`: a clear cup does not look
+  // like milk chai, and this corpus exists to be looked at. They resolve, so
+  // they leave the miss report and enter the generation queue as their own
+  // dishes; until a photo exists the consumer renders nothing, per contract.
+  { slug: 'green-tea', name: 'Green Tea', category: 'drink', aliases: ['green tea', 'cup of green tea', 'green chai'] },
+  { slug: 'black-tea', name: 'Black Tea', category: 'drink', aliases: ['black tea', 'cup of black tea', 'kali chai', 'black chai'] },
   { slug: 'walnuts', name: 'Walnuts', category: 'nut', aliases: ['walnuts', 'walnut', 'akhrot'] },
   {
     slug: 'aloo-palak',

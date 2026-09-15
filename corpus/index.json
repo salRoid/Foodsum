@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-09-11",
+  "generatedAt": "2026-09-15",
   "baseUrl": "/i",
   "sizes": [
     "160x120",
@@ -808,11 +808,22 @@
       "name": "Tea",
       "category": "drink",
       "keys": [
+        "adrak chai",
+        "adrak tea",
+        "adrak wali chai",
+        "cardamom chai",
+        "cardamom tea",
         "chai",
+        "chai tea",
         "cup of tea",
+        "elaichi chai",
+        "ginger chai",
+        "ginger tea",
         "masala chai",
+        "masala tea",
         "milk tea",
-        "tea"
+        "tea",
+        "tea with milk"
       ],
       "variants": 1,
       "variantMeta": [
@@ -835,6 +846,29 @@
           ]
         }
       ]
+    },
+    {
+      "slug": "green-tea",
+      "name": "Green Tea",
+      "category": "drink",
+      "keys": [
+        "cup of green tea",
+        "green chai",
+        "green tea"
+      ],
+      "variants": 0
+    },
+    {
+      "slug": "black-tea",
+      "name": "Black Tea",
+      "category": "drink",
+      "keys": [
+        "black chai",
+        "black tea",
+        "cup of black tea",
+        "kali chai"
+      ],
+      "variants": 0
     },
     {
       "slug": "walnuts",

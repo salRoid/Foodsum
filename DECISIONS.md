@@ -23,6 +23,39 @@ Format: what was decided · why · what was rejected · consequences.
 
 ---
 
+## 2026-09-15 — "Ginger tea" is tea; "green tea" is a new dish, not an alias
+
+**Decided (salroid: *"when I am typing tea the image of tea is coming, but if
+I am typing ginger tea that image is not coming — solve it on Foodsum"*).**
+Nine qualified spellings of milk chai — `ginger tea`, `ginger chai`, `adrak
+chai`, `adrak tea`, `adrak wali chai`, `elaichi chai`, `cardamom chai`,
+`cardamom tea`, `tea with milk`, plus `masala tea` and `chai tea` — are
+aliases of `tea`. `green-tea` and `black-tea` are **new dishes** with no image.
+
+**Why an alias and not a prefix rule.** The obvious general fix — strip a
+leading qualifier, or fall back to the longest suffix that resolves — is the
+tier-2½ this repo refuses (`resolve.ts` header): "paneer bhurji" ends in
+"bhurji" too, and "egg curry" in "curry". A suffix match converts a safe miss
+into a confident wrong dish, which is the one outcome the matcher exists to
+prevent. So the fix is the one the miss report always points at: a line in
+`dishes.ts`, written by a human who has decided this string IS that cup.
+
+**Why green and black tea are not aliases.** Adrak chai *is* milk chai with
+ginger in it — the photograph is the same. A clear cup is not: a corpus that
+exists to be looked at cannot show a milky cup for "green tea". They resolve
+now (tier 1), so they leave the miss report and sit in `withoutImages` until
+`npm run missing -- --dishes` / the next `brief` queues them and a photo is
+generated. Until then Health renders nothing for them, per contract — which is
+also what it rendered before, so nothing regresses.
+
+**Consequence.** `corpus/index.json` rebuilt (48 dishes, 199 keys); 47 tests
+pass; verified by execution that `ginger tea`, `Adrak chai (1 cup)` and
+`Ginger tea + 4 Marie Gold biscuits` all resolve to `tea` and `1 cup green tea`
+resolves to `green-tea` with no image and no miss. **Health only sees this
+after a rebuild** — the index is copied into the image at build time.
+
+---
+
 ## 2026-09-12 — Production Health is mirrored locally before the meal-image queue is generated
 
 **The source of truth was refreshed before generation.** `./sync-db.sh sync
